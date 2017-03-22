@@ -1,8 +1,7 @@
-\documentclass[trackchanges, twocolumn, tighten]{aastex61}
-\usepackage{amssymb,amsmath,mathrsfs,graphicx}
-\usepackage{xspace}
-\usepackage[section]{placeins}
-\usepackage{natbib}
+\documentclass[linenumbers, trackchanges, tighten]{aastex61}%twocolumn,
+\usepackage{amsmath,mathrsfs,xspace}
+%\usepackage[section]{placeins}
+%\usepackage{natbib}
 \bibliographystyle{aasjournal}
 \graphicspath{ {./figures/} }
 %%%%%%%
@@ -64,11 +63,13 @@
 \newcommand{\QH}{\ensuremath{Q_{\mathrm{H}}}}
 \newcommand{\QHat}{\ensuremath{\hat{Q}_{\mathrm{H}}}}
 \newcommand{\U}{\ensuremath{\mathcal{U}_{0}}}
+\newcommand{\Up}{\ensuremath{\mathcal{U}}}
 \newcommand{\Rs}{\ensuremath{R_{\mathrm{S}}}}
 \newcommand\s[1]{\ensuremath{\mathrm{s}^{#1}}}
 \newcommand\cms{\ensuremath{\mathrm{cm} \cdot \mathrm{s}^{-1}}}
 \newcommand{\logU}{\ensuremath{\logten \mathcal{U}_0}}
-\newcommand\niiha{\nii{}\lam{4865}/\ha{}}
+\newcommand{\logUp}{\ensuremath{\logten \mathcal{U}}}
+\newcommand\niiha{\nii{}\lam{6584}/\ha{}}
 \newcommand\oiiihb{\oiii{}\lam{5007}/\hb{}}
 \newcommand\oiiioii{\oiii{}/\oii{}}
 \newcommand{\Heat}{\ensuremath{\Gamma_{\mathrm{ion}}}}
@@ -96,13 +97,13 @@
 \affil{Department of Astronomy, Harvard University, Cambridge, MA, USA}
 
 \begin{abstract}
-Accounting for nebular emission when modeling galaxy spectral energy distributions (SEDs) is important, as both line and continuum emission can contribute significantly to the total observed flux. In this work, we present a new nebular emission model integrated within the Flexible Stellar Population Synthesis code that computes the total line and continuum emission for complex stellar populations using the photoionization code \textsc{Cloudy}. The self-consistent coupling of the nebular emission to the matched ionizing spectrum produces emission line intensities that correctly scale with the stellar population as a function of age and metallicity. This more complete model of galaxy SEDs will improve estimates of global gas properties derived with diagnostic diagrams, star formation rates based on H$\alpha$, and stellar masses derived from NIR broadband photometry. Our models agree well with results from other photoionization models and are able to reproduce observed emission from H\,\textsc{ii} regions and star-forming galaxies. Our models show improved agreement with the observed H\,\textsc{ii} regions in the Ne\,\textsc{iii}/O\,\textsc{ii} plane and show satisfactory agreement with He\,\textsc{ii} emission from $z=2$ galaxies when including rotating stellar models. Models including post-asymptotic giant branch stars are able to reproduce line ratios consistent with low-ionization emission regions (LIERs).
+Accounting for nebular emission when modeling galaxy spectral energy distributions (SEDs) is important, as both line and continuum emission can contribute significantly to the total observed flux. In this work, we present a new nebular emission model integrated within the Flexible Stellar Population Synthesis code that computes the total line and continuum emission for complex stellar populations using the photoionization code \textsc{Cloudy}. The self-consistent coupling of the nebular emission to the matched ionizing spectrum produces emission line intensities that correctly scale with the stellar population as a function of age and metallicity. This more complete model of galaxy SEDs will improve estimates of global gas properties derived with diagnostic diagrams, star formation rates based on H$\alpha$, and \replaced{stellar masses derived from NIR broadband photometry}{physical properties derived from broadband photometry}\explain{For galaxies with significant recent star formation and star clusters, including the contribution from nebular emission will affect color and magnitude-based estimates of age, mass, reddening etc.}. Our models agree well with results from other photoionization models and are able to reproduce observed emission from H\,\textsc{ii} regions and star-forming galaxies. Our models show improved agreement with the observed H\,\textsc{ii} regions in the Ne\,\textsc{iii}/O\,\textsc{ii} plane and show satisfactory agreement with He\,\textsc{ii} emission from $z=2$ galaxies when including rotating stellar models. Models including post-asymptotic giant branch stars are able to reproduce line ratios consistent with low-ionization emission regions (LIERs).
 \end{abstract}
 \keywords{Galaxies --- galaxies: abundances --- galaxies: ISM --- galaxies: star formation}
 
 \section{Introduction} \label{sec:introduction}
 
-The light emerging from galaxies is a complex combination of emission from stars and gas, processed by any intervening dust. To fully model this emission, it is necessary to include the effects of each of these components. For star-forming galaxies, the UV and optical flux is dominated by the light produced by young, luminous stars and the surrounding networks of ionized gas. The latter produces nebular emission, which can contribute as much as 20-60\% of broadband fluxes and which is responsible for nearly all the optical emission lines present in the spectra of star-forming galaxies \citep{Anders03, Reines10}. Emission lines are routinely used at low and high redshift to measure key physical properties of entire galaxies, such as the star formation rate (SFR) and metallicity \citep[e.g.,][]{Tremonti04, Kewley08}.
+The light emerging from galaxies is a complex combination of emission from stars and gas, processed by any intervening dust. To fully model this emission, it is necessary to include the effects of each of these components. For star-forming galaxies, the UV and optical flux is dominated by the light produced by young, luminous stars and the surrounding networks of ionized gas. The latter produces nebular emission, which can contribute as much as 20-60\% of \added{UV-IR}\explain{The referee suggested adding in "UV-optical" but the contribution from nebular continuum emission is strongest in the IR}broadband fluxes and which is responsible for nearly all the optical emission lines present in the spectra of star-forming galaxies \citep{Anders03, Reines10}. Emission lines are routinely used at low and high redshift to measure key physical properties of entire galaxies, such as the star formation rate (SFR) and metallicity \citep[e.g.,][]{Tremonti04, Kewley08}.
 
 Nebular emission is comprised of two components: (1) the nebular continuum, which is a continuous emission spectrum that consists of free-free (bremsstrahlung), free-bound (recombination continuum), and two-photon emission; and (2) nebular line emission, which is primarily produced by radiative recombination processes and emission from forbidden and fine structure line transitions. The strength of emission from these two components depends on both the ionizing radiation field and the metallicity of the gas. The amount of nebular emission thus varies from galaxy to galaxy, and can evolve with cosmic time.
 
@@ -112,7 +113,7 @@ The SPS codes \Pegase \citep{Fioc99}, \Popstar \citep{Molla09}, and \SB \citep{L
 
 For a more detailed analysis of the stellar and nebular energy distributions, population synthesis models can be coupled with photoionization models. Photoionization models have proven to be essential in interpreting the emission-line properties of \hii regions in terms of the properties of the stars and gas \citep[e.g.,][]{Dopita00} and the nebular emission from galaxies in terms of macroscopic star formation parameters \citep[e.g.,][]{Brinchmann04}. Popular photoionization codes include \Cloudy \citep{Ferland13} and \Mappings \citep{Groves04}, both of which compute the full radiative transfer through a gas cloud and predict the resultant emission spectrum. Most implementations model the total nebular emission as the sum of emission from multiple \hii regions with different ages and physical properties, though at the cost of being much more computationally expensive\citep[e.g.,][]{Kewley01, Moy01, CL01, Dopita06}.
 
-We present a nebular emission model within the Flexible Stellar Population Synthesis code \citep[\FSPS\footnote{available on GitHub \url{https://github.com/cconroy20/fsps}},][]{Conroy09} that adopts the best features of the realistic photoionization models and implements them within a more flexible stellar population framework. We couple the ionizing spectrum and stellar metallicity with the gas phase metallicity to self-consistently compute the total line and continuum emission. Following the process of \citet{CL01}, we use simple stellar populations (SSPs) as the ionizing source for the gas clouds using the photoionization code \Cloudy. The resultant nebular line and continuum emission are embedded within \FSPS as pre-computed tables. We can then combine the results from the SSPs to produce self-consistent spectra for arbitrary star formation histories (SFHs). This strategy maintains the flexibility of \FSPS without the need to rerun the computationally expensive photoionization models for each output stellar population.
+We present a nebular emission model within the Flexible Stellar Population Synthesis code \citep[\FSPS\footnote{available on GitHub \url{https://github.com/cconroy20/fsps}},][]{Conroy09} that adopts the best features of the realistic photoionization models and implements them within a more flexible stellar population framework. We couple the ionizing spectrum and stellar metallicity with the gas phase metallicity to self-consistently compute the total line and continuum emission. Following the process of \citet{CL01}, we use simple stellar populations (SSPs) as the ionizing source for the gas clouds using the photoionization code \Cloudy\explain{The referee suggested adding ``for a variety of gaseous metallicities'' but for a given SSP (t,Z) the gaseous metallicity is fixed to Z and we run Cloudy for the different values of log U: -4,-3.5,-3,-2.5-2,-1.5,-1. For a given SSP (t, Z, U), we do not run CLOUDY at different gaseous metallicities, only at the gaseous metallicity matching the SSP metallicity, Z.}. The resultant nebular line and continuum emission are embedded within \FSPS as pre-computed tables. We can then combine the results from the SSPs to produce self-consistent spectra for arbitrary star formation histories (SFHs). This strategy maintains the flexibility of \FSPS without the need to rerun the computationally expensive photoionization models for each output stellar population.
 
 The self-consistent implementation of the nebular model is two-fold: First, the nebular line and continuum emission predicted by \Cloudy is added to the \emph{same} spectrum that was used to produce the emission lines, and is thus directly tied to the ionizing continuum of each SSP as a function of age, metallicity, and ionization parameter. Second, by linking the stellar metallicity in \FSPS with the gas-phase abundances in \Cloudy we couple the metallicity dependent changes in the ionizing EUV spectral shape to the changes in the gas coolants, which is reflected in both the temperature and ionization structure of the nebula. This is a particularly important feature, as it allows us to more accurately model the simultaneous signature of stars, gas, and dust in the integrated spectra of galaxies, as discussed below. 
 
@@ -136,7 +137,7 @@ We note that density is the fundamental parameter in \Cloudy simulations, wherea
 
 \subsubsection{Gas Chemical Content}\label{sec:methods:cloudy:abund}
 
-We adopt the gas phase abundances specified by \citet{Dopita00}, which are based on the solar abundances from \citet{AndersGrev89}. We assume that the gas phase metallicity scales with the metallicity of the stellar population, given that the metallicity of the newly-formed stars should be identical to the metallicity of the gas cloud from which the stars formed. Metal abundances are solar-scaled, with the exception of nitrogen, which has a known secondary nucleosynthetic contribution. For the scaling of nitrogen with metallicity, we follow the piecewise relationship between nitrogen and oxygen specified by \citet{Dopita00}.
+We adopt the gas phase abundances specified by \citet{Dopita00}, which are based on the solar abundances from \citet{AndersGrev89}. We assume that the gas phase metallicity scales with the metallicity of the stellar population, given that the metallicity of the \replaced{newly-formed stars}{most massive stars} should be identical to the metallicity of the gas cloud from which the stars formed. Metal abundances are solar-scaled, with the exception of nitrogen, which has a known secondary nucleosynthetic contribution. For the scaling of nitrogen with metallicity, we follow the piecewise relationship between nitrogen and oxygen specified by \citet{Dopita00}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{deluxetable}{lcc}[b!]
@@ -168,7 +169,7 @@ Fe  & -4.33 & -2.0 \\
 
 Elements like carbon and nitrogen are observed to be heavily depleted onto dust grains in \hii regions. This alters the chemical composition of the nebula, but also the thermal properties of the nebula, since these elements are important gas coolants. To account for this, the relative abundances used in this work include the effect of depletion onto dust grains derived from observations as defined in \citet{Dopita00}. The applied depletion factors are constant factors applied to specific elements and do not scale with the metallicity of the model. The depletion factors are applied regardless of whether the model nebula includes dust grains, due to their important effect on the temperature structure of the cloud. A complete description of the elemental abundances and depletion factors used in this work can be found in \Tab{abd}. In \Tab{abdComp} we compare the abundances used in this work with those used in other nebular emission models.
 
-We produce two separate nebular models, one that includes grains within the nebula and one that does not. For the set of models that include dust grains within the nebula, we use a dust grain model with a size distribution and abundances pattern appropriate for the ISM of the Milky Way. The grain prescription includes both a graphite and silicate component and generally reproduces the observed extinction properties for a ratio of extinction per reddening of $R_V \equiv A_V/E(B-V) = 3.1$. We note that in real galaxies $R_v$ will not necessarily equal the canonical Milky Way value and depletion patterns may differ from the ones adopted in this work, which could in turn significantly alter the physical properties of the model \hii region.
+We produce two separate nebular models, one that includes grains within the nebula and one that does not. \added{The majority of the models discussed hereafter do not include dust grains within the nebula.} For the set of models that include dust grains within the nebula, we use a dust grain model with a size distribution and abundances pattern appropriate for the ISM of the Milky Way. The grain prescription includes both a graphite and silicate component and generally reproduces the observed extinction properties for a ratio of extinction per reddening of $R_{\mathrm{v}} \equiv A_{\mathrm{v}}/E(B-V) = 3.1$. We note that in real galaxies \replaced{$R_v$}{$R_{\mathrm{v}}$} will not necessarily equal the canonical Milky Way value and depletion patterns may differ from the ones adopted in this work, which could in turn significantly alter the physical properties of the model \hii region.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{deluxetable*}{cccccccc}
@@ -198,39 +199,42 @@ We produce two separate nebular models, one that includes grains within the nebu
 
 \subsubsection{Ionizing spectra}\label{sec:methods:cloudy:spectra}
 
-We use the stellar population synthesis code \FSPS via the python interface, \pFSPS\footnote{available at \url{http://dan.iel.fm/python-fsps/}}, to generate spectra from coeval clusters of stars, each with a single age and metallicity (SSPs). The ionizing spectra from \FSPS are used as the central radiation field responsible for ionizing the surrounding gas cloud in the \Cloudy model. For each SSP ($t$, $Z$), the SED dictates the spectrum of ionizing photons and the metallicity fixes the nebular abundances. This couples the age and metallicity-dependent changes in the shape and intensity of the ionizing spectrum with the coolants in the gas cloud, both of which regulate cloud temperature and ionization structure. The current implementation in \FSPS allows the user to specify different stellar and gas-phase metallicities, which will break some of the self-consistency of the model, since emission lines will be added to an SSP that is different from the one that was used to ionize the gas.
+We use the stellar population synthesis code \FSPS via the python interface, \pFSPS\footnote{available at \url{http://dan.iel.fm/python-fsps/}}, to generate spectra from coeval clusters of stars, each with a single age and metallicity (SSPs)\explain{The referee suggested changing this to ``single age and initial metallicity'', we kept the sentence as-is, since the metallicity used does not evolve with the stellar population}. The \replaced{ionizing spectra}{spectra} from \FSPS are used as the central radiation field responsible for ionizing the surrounding gas cloud in the \Cloudy model. For each SSP ($t$, $Z$), the SED dictates the spectrum of ionizing photons and the metallicity fixes the nebular abundances. This couples the age and metallicity-dependent changes in the shape and intensity of the ionizing spectrum with the coolants in the gas cloud, both of which regulate cloud temperature and ionization structure. \added{We do not vary the gas-phase abundances in \Cloudy for a given SSP.} \replaced{The}{We caution users that the} current implementation in \FSPS allows the user to specify different stellar and gas-phase metallicities, which will break some of the self-consistency of the model, since emission lines will be added to an SSP that is different from the one used to ionize the gas.
 
 The SSPs are generated assuming a Kroupa IMF \citep{Kroupa01} and a fully sampled mass function. The SSPs use the 2007 Padova isochrones \citep{Bertelli94, Girardi00, Marigo08} which do not include evolutionary tracks for massive stars. Geneva isochrones are adopted for $M > 70 M_{\sun}$, using the high mass-loss rate evolutionary tracks from \citep{Schaller92, Meynet00} as recommended by \citet{Levesque10}. If the user adjusts the IMF or the stellar library used in \FSPS, the precomputed \Cloudy output will no longer be self-consistent.
 
-We adopt the BaSeL 3.1 stellar library, a theoretical library of stellar spectra based on Kurucz models, re-calibrated using empirical photometric data \citep{BaSeL}. The Wolf-Rayet (WR) spectra are from M. Ng, G. Taylor \& J.J. Eldridge (priv. comm) using WM-Basic \citep{Pauldrach01}, and the O-star spectra are from \citet{Smith02} using CMFGEN \citep{HillierMiller}. Post asymptotic giant branch (post-AGB) stellar isochrones are from \citet{Vassiliadis} with post-AGB spectra from \citet{Rauch03}. In \Sec{spectra} we discuss how changing various aspects of the applied SPS model affects the ionizing spectrum and the resultant nebular emission.
-
+We adopt the BaSeL 3.1 stellar library, a theoretical library of stellar spectra based on Kurucz models, re-calibrated using empirical photometric data \citep{BaSeL}. The Wolf-Rayet (WR) stellar spectra are from M. Ng, G. Taylor \& J.J. Eldridge (priv. comm) using WM-Basic \citep{Pauldrach01}, and the O-star spectra are from \citet{Smith02} using CMFGEN \citep{HillierMiller}. Post asymptotic giant branch (post-AGB) stellar isochrones are from \citet{Vassiliadis} with post-AGB spectra from \citet{Rauch03}. In \Sec{spectra} we discuss how changing various aspects of the applied SPS model affects the ionizing spectrum and the resultant nebular emission.
+\newpage
 \subsubsection{Ionizing Spectrum Intensity}\label{sec:methods:cloudy:intensity}
 
-To set the intensity of the ionizing spectrum, we use the ionization parameter $\mathcal{U}$, a dimensionless quantity that gives the ratio of hydrogen ionizing photons to total hydrogen density:
-\begin{equation}\label{eq:logU}
-    \mathcal{U} \equiv \frac{\QH{}}{4 \pi R^2 \cdot \nH \cdot c},
-\end{equation}
-where $R$ is radius of the ionized region, \nH{} is the number density of hydrogen (\cm{-3}), $c$ is the speed of light, and \QH{} (\s{-1}) is the total number of photons emitted per second that are capable of ionizing hydrogen ($\lambda_0 \leq 912 \ang$):
+For photoionization models, we care primarily about the intensity of the ionizing spectrum blueward of $912 \ang$, the ionization threshold for hydrogen. We quantify the intensity of each ionizing spectrum with \QH{}, the total number of photons emitted per second that are capable of ionizing hydrogen:
 \begin{equation}\label{eq:Q}
     \QH{} \equiv \int_{\nu_0}^{\infty}\frac{f_{\nu}}{h \nu} d\nu = \frac{1}{hc} \int_0^{\lambda_0}\lambda f_{\lambda}d\lambda\;.
 \end{equation}
-The ionization parameter used in this work, $\mathcal{U}$, differs from the ionization parameter $q$ (\cms) used by \citet{Levesque10} and \citet{Dopita13} by a factor of $c$, the speed of light: $q = \mathcal{U} \cdot c$. \Cloudy defines $\mathcal{U}$ at $R = \Rin$, the distance from the ionizing source to the illuminated inner face of the cloud. In its derivation, $\mathcal{U}$ is computed at $R = \Rs$, the \strom{} radius, the location where ionization and recombination rates are balanced in thermal equilibrium, which can only be calculated after a photoionization model is computed. The distinction does not matter for a thin spherical shell, the geometry assumed in this work \citep[for details see][]{CL01}. To avoid confusion, we define \U{} as the ionization parameter calculated at the inner radius of the gas cloud.
 
-\U{} conveniently folds in both the intensity (\QH{}) of the ionizing source and the geometry of the gas cloud (\Rin{}, \nH{}), which allows us to make a simplification to reduce the dimensionality of our model grid. For a fixed EUV shape and metallicity, any combination of \QH{}, \Rin{}, and \nH{} that produces the same value of \U{} will produce the same nebular spectrum, a simplification which holds at typical \hii region densities and sizes ($\nH{} \sim 10-1000$, $\Rin \sim 0.1-10$ pc). 
+\QH{} can be calculated directly from the SSP ionizing spectra from \FSPS, which assume the formation of one solar mass of new stars. Over the full range of SSP ages and metallicities used in this work, \QH{} calculated from the $1\;\Msun{}$ spectra varies from $10^{43} - 10^{47}$ (s$^{-1}$). However, the $1\Msun$ SSPs do not provide enough ionizing photons to reproduce the ionizing photon rates observed massive \hii regions. A single O7V star with $M_{\mathrm{i}} \sim 25 \Msun$ produces $\QH \sim 10^{48.75}$, while a young star cluster with mass $M \sim 3 \times 10^4 \Msun$ produces $\QH{} \sim 10^{51}$. Thus, to achieve values of \QH{} consistent with observed massive \hii regions, we must increase the intensity of the ionizing spectra by increasing the total stellar mass of the SSPs. Below, we first describe how we specify the intensity of the ionizing spectra within \Cloudy, and then describe the relation to SSP stellar mass.
 
-We run each model at a range of \U{} values for a fixed \Rin{} and \nH{}. We vary \logU{} from -4 to -1 in steps of 0.5, a choice informed by \citet{Rigby04}, who observed ionization parameters in local starburst galaxies in the range $-3.5 \leq \logU \leq -1.5$. Running models at different values of \U{} but fixed \Rin{} and \nH{} implicitly varies the value of \QH{} input to \Cloudy for each model. Older models with softer ionizing spectra thus require higher values of \QH{} to produce the same desired range of ionization parameters. 
+When running \Cloudy, we set the intensity of the ionizing spectrum using the ionization parameter, $\Up$, a dimensionless quantity that gives the ratio of hydrogen ionizing photons to total hydrogen density:
+\begin{equation}\label{eq:logU}
+    \Up \equiv \frac{\QH{}}{4 \pi R^2 \cdot \nH \cdot c},
+\end{equation}
+where $R$ is radius of the ionized region, \nH{} is the number density of hydrogen (\cm{-3}), and $c$ is the speed of light. The ionization parameter used in this work, \Up{}, differs from the ionization parameter $q$ (\cms) used by \citet{Levesque10} and \citet{Dopita13} by a factor of $c$, the speed of light: $q = \Up \cdot c$.
 
-Each instantaneous burst generated by \FSPS assumes the formation of one solar mass of new stars. From equation \Eq{Q}, we can calculate $\QHat \equiv \QH/\Msun$ from the spectrum of each $1\Msun$ SSP. \QH{} for an arbitrary population is then \QHat{} times the mass in stars formed. Since the value of \QH{} input to \Cloudy will vary from \QHat{} as calculated from the ionizing spectrum, we normalize the resultant spectrum by \QHat{}/\QH{} to account for the different intensities required to produce the desired range in \logU{}.
+In its derivation, \Up{} is computed at $R = \Rs$, the \strom{} radius, the location where ionization and recombination rates are balanced in thermal equilibrium, which can only be calculated after a photoionization model is computed. \Cloudy defines \Up{} at $R = \Rin$, the distance from the ionizing source to the illuminated inner face of the cloud. To avoid confusion, we define \U{} as the ionization parameter calculated at the inner radius of the gas cloud. The distinction does not matter for a thin spherical shell, the geometry assumed in this work \citep[for details see][]{CL01}.
 
-For context, at $1 \Msun{}$, \QHat{} calculated from the ionizing spectrum varies from $10^{43} - 10^{47}$ s$^{-1}/\Msun{}$, which corresponds to $-9 \lesssim \logU \lesssim -5$ at the assumed $\Rin{} = 10^{19}$ cm and $\nH=100$ \cm{-3} of our model. However, $1\Msun$ of stars is incapable of ionizing massive \hii regions, which require $-4 \lesssim \logU \lesssim -1$. The normalization factor \QHat{}/\QH{} thus varies from $10^8$ to $10^1$. For any given model, the range of applied normalizations only varies by $10^3$.
+\U{} conveniently folds in both the intensity of the ionizing source (\QH{}) and the geometry of the gas cloud (\Rin{}, \nH{}), which allows us to make a simplification to reduce the dimensionality of our model grid. For a fixed EUV shape and metallicity, any combination of \QH{}, \Rin{}, and \nH{} that produces the same value of \U{} will produce the same nebular spectrum, a simplification which holds at typical \hii region densities and sizes ($\nH{} \sim 10-1000$, $\Rin \sim 0.1-10$ pc). 
 
-We choose to fix \Rin{} and \nH{} and only vary \QH{} to produce the various desired values of \logU{}. Other groups have taken different approaches to generating model grids that vary in ionization parameter. \citet{Moy01} pair \Pegase with \Cloudy, and use a fixed inner radius, a constant gas density, and set \QH{} to $10^{52}$ in every model. Different values of \U{} are then generated by varying the volumetric fill factor of the surrounding gas cloud, a measure of how clumpy the surrounding gas cloud is\footnote{The volumetric fill factor alters the effective path length of the ionizing photons and is different from the covering factor, $\frac{\Omega/}{4\pi}$, which specifies the fraction of the ionizing flux that is ``seen'' by the gas.}. \citet{Levesque10} pair \SB with \Mappings, and increase the total mass of the instantaneous bursts to $10^6\,\Msun$, and vary the inner radius of the cloud to produce ionization parameters consistent with those observed in \citet{Rigby04}.
+Each model is run through \Cloudy at 7 different ionization parameters, $-4 \leq \logU \leq -1$ in steps of 0.5, a range consistent with ionization parameters observed in local starburst galaxies \citep{Rigby04}. To produce the various values of \U{}, we choose to fix \Rin{} and \nH{} and only vary \QH{}. Other groups have taken different approaches: \citet{Moy01} fix \Rin{}, \nH{}, and \QH{} to $10^{52}$; they produce different ionization parameters by varying the filling factor of the surrounding gas cloud\footnote{The volumetric fill factor is a measure of how clumpy the surrounding gas is, and alters the effective path length of the ionizing photons. It is different from the covering factor, $\frac{\Omega}{4\pi}$, which specifies the fraction of the ionizing flux that is ``seen'' by the gas.}. \citet{Levesque10} fix the total mass of the instantaneous bursts at $10^6\,\Msun$ and vary the inner radius of the cloud to produce different values of \U{}.
+
+We note that running models at different values of \U{} and fixed \Rin{} and \nH{} by varying \QH{} implicitly varies the effective mass of the SSPs. Older SSPs produce fewer ionizing photons and must be more massive than a younger SSP to achieve the same value of \U{}. To distinguish the \QH{} input to \Cloudy from the one measured from the $1\;\Msun$ ionizing spectrum, we define \QHat{} as the ionizing photon rate \emph{per solar mass}: $\QHat \equiv \QH/\Msun$. To account for the different intensities required to produce the desired range in \logU{}, we simply normalize the output from \Cloudy by the total stellar mass, $\QHat/\QH$. 
+
+The range in total stellar mass required to produce ionization parameters in the range of $-4 \leq \logU \leq -1$ varies from $10^1$ to $10^8\;\Msun$ depending on the age and metallicity of the SSP. For a $1\;$Myr solar-metallicity SSP, $-4 \leq \logU \leq -1$ implies variation in stellar mass from $10^1$ to $10^4\;\Msun$ at the assumed $\Rin{} = 10^{19}$ cm and $\nH=100$ \cm{-3} of our model. At $7\;$Myr, the oldest SSP used in our model, this requires larger masses, $10^5$ to $10^8\;\Msun$.\explain{We rewrote this section to clarify the explanation and address the referee's question about the mass normalization.}
 
 \subsubsection{Other Model Specifications}\label{sec:methods:cloudy:other}
 
 The \Cloudy models are radiation-bounded, and all relevant radiative transfer effects are included in the treatment of line formation, which requires several iterations per model to establish a well-defined optical depth scale. We set a temperature floor of $100$K, and stop the radiative transfer calculation when the ionized fraction of the cloud drops to 1\%; resultant line ratios do not qualitatively change for simulations that are stopped at slightly different fractions.
 
-We record 128 emission lines for each model, which includes emission lines from the UV to the IR. Roughly 60\% of the lines included are in the optical wavelength regime, with ${\sim20}\%$ in the UV and ${\sim}20\%$ in the IR. A full list of the included emission lines is provided in \Tab{emLines}. \Cloudy reports air wavelengths for any wavelength over $2000\ang$, and we convert these to vacuum wavelengths using the IAU standard formalism from \citet{Morton1991}. Note that many wavelengths for the reported emission lines from \Cloudy were inaccurate by 0.1-0.5\AA, due to a combination of the limited number of significant figures that could be recorded in legacy versions of \Cloudy and the use of outdated line databases. To remedy this, the lines were matched to the appropriate lines from the NIST atomic line database, and their wavelengths set to the true vacuum value.
+We record 128 emission lines for each model, which includes emission lines from the UV to the \replaced{IR}{far-IR}. Roughly 60\% of the lines included are in the optical wavelength regime, with ${\sim20}\%$ in the UV and ${\sim}20\%$ in the IR. A full list of the included emission lines is provided in \Tab{emLines}. \Cloudy reports air wavelengths for any wavelength over $2000\ang$, and we convert these to vacuum wavelengths using the IAU standard formalism from \citet{Morton1991}. Note that many wavelengths for the reported emission lines from \Cloudy were inaccurate by 0.1-0.5\AA, due to a combination of the limited number of significant figures that could be recorded in legacy versions of \Cloudy and the use of outdated line databases. To remedy this, the lines were matched to the appropriate lines from the NIST atomic line database, and their wavelengths set to the true vacuum value.
 
 We integrate the \FSPS model spectra into \Cloudy using its support for ``user-defined'' atmosphere grids. We have generated \Cloudy-formatted ascii files that supply the \FSPS spectrum for stellar populations that span the full range of available ages and metallicities; these files have been made publicly available for anyone to use within \Cloudy. The publicly available ASCII files include a standard, single-burst version and a version for populations with constant star formation; both use the IMF, evolutionary tracks, and spectral libraries as specified above. However, \CloudyFSPS\footnote{available on GitHub \url{https://github.com/nell-byler/cloudyfsps}.} provides a python interface between \FSPS and \Cloudy that can be used to generate ASCII files for arbitrarily complex stellar populations as input to \Cloudy.
 
@@ -256,11 +260,11 @@ The ionizing spectrum is the link between \FSPS and the nebular emission model, 
 %-------------------------------------------------------
 % SSP spectrum: flux contribution
 %-------------------------------------------------------
-\begin{figure*}[Ht!]
+\begin{figure*}[!htbp]
   \begin{center}
     \includegraphics[width=0.75\textwidth]{f1.pdf}
     %\plotone{f1.pdf}
-    \caption{The flux contribution from different mass stars for solar metallicity SSPs at different ages. Only the flux blueward of 912\ang{} ($I_{\mathrm{H}}$, shown by the dashed line) is capable of ionizing hydrogen, which is primarily produced by massive stars with $M > 10\Msun$  (O- and B-type stars, shown in blue, purple, and orange). These stars are short lived, with most of the ionizing radiation gone by $\sim 10$ Myr.}
+    \caption{\replaced{The flux contribution from different mass stars for solar metallicity SSPs at different ages.}{The time evolution of a solar-metallicity SSP, showing the relative flux contribution from stars of different masses. The ionization threshold for hydrogen, $I_{\mathrm{H}}$, and helium, $I_{\mathrm{He}}$, are shown as dashed lines.} \replaced{Only the flux blueward of 912\ang{} ($I_{\mathrm{H}}$, shown by the dashed line) is capable of ionizing hydrogen, which is primarily produced by massive stars with $M > 10\Msun$  (O- and B-type stars, shown in blue, purple, and orange).}{Massive stars ($M > 10\Msun$, shown in blue, purple, and orange) are responsible for producing most of the radiation capable of ionizing hydrogen.} These stars are short lived, and most of the ionizing radiation is gone by $\sim 10$ Myr.}
     \label{fig:specPile}
   \end{center}
 \end{figure*}
@@ -271,7 +275,7 @@ The ionizing spectrum is the link between \FSPS and the nebular emission model, 
 
 For giant \hii regions, the ionization is provided by groups of rapidly evolving massive stars. The ionizing spectrum will thus change with time, with stars of different masses dominating the spectrum at different times. For \hii regions, we are primarily concerned with the evolution of flux at wavelengths shorter than $912 \ang$, as these are the photons with energies high enough to ionize hydrogen in the surrounding gas cloud. 
 
-\Fig{specPile} shows the contribution of stars in different mass ranges to the ionizing spectrum as a function of age and wavelength. In all panels, the radiation capable of ionizing hydrogen is produced by the most massive stars: those with initial masses $\gtrsim 10 \Msun$. At 1 Myr, stars with initial mass $\gtrsim35\Msun$ dominate the ionizing spectrum. These stars are extremely short-lived and by 3 Myr the spectrum is dominated by stars with initial masses $\gtrsim25\Msun$. O-type stars ($>35\Msun$) have evolved off of the main sequence by 5 Myr, and stars with masses $10-25\Msun$ (B-type stars) dominate the spectrum from $6-20$ Myr. By 10 Myr there are not enough stars left with sufficiently high temperatures to produce significant amounts of ionizing radiation.
+\Fig{specPile} shows the \added{relative flux} contribution of stars in different mass ranges to the ionizing spectrum \added{at solar metallicity} as a function of \replaced{age and wavelength}{time}. In all panels, the radiation capable of ionizing hydrogen is produced by the most massive stars: those with initial masses $\gtrsim 10 \Msun$. At 1 Myr, stars with initial mass $\gtrsim35\Msun$ dominate the ionizing spectrum. These stars are extremely short-lived and by 3 Myr the spectrum is dominated by stars with initial masses $\gtrsim25\Msun$. O-type stars ($>35\Msun$) have evolved off of the main sequence by 5 Myr, and stars with masses $10-25\Msun$ (B-type stars) dominate the spectrum from $6-20$ Myr. By 10 Myr there are not enough stars left with sufficiently high temperatures to produce significant amounts of ionizing radiation.
 
 \subsection{Ionizing photon production rate}\label{sec:spectra:Q}
 
@@ -282,7 +286,7 @@ The SSP metallicity has a second-order effect on the ionizing photon rate, attri
 %-------------------------------------------------------
 % Q (function of metallicity)
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f2.pdf}
     \includegraphics[width=0.45\textwidth]{f2.pdf}
@@ -303,7 +307,7 @@ The EUV-slope is also a function of metallicity, since metallicity affects stell
 %-------------------------------------------------------
 % Q (function of metallicity)
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f3.pdf}
     \includegraphics[width=0.45\textwidth]{f3.pdf}
@@ -319,24 +323,24 @@ Flux in the EUV portion of the spectrum is primarily produced by stars with $M >
 
 We note, however, that models of WR evolution are extremely uncertain, and that the exact masses and evolutionary pathways are not well-constrained. The extreme non-LTE nature of their atmospheres make WR stars challenging to model, and variations in mass loss and the strength of stellar winds make it difficult to predict ionizing fluxes \citep[see review by][and references within]{Crowther07}. This limitation likely imparts significant uncertainties into the evolution of the ionizing spectrum, particularly at late (${\sim}5$ Myr) times.
 
-The Padova+Geneva isochrones used in this work do not include the effects of stellar rotation or binarity, both of which have important effects on the ionizing spectrum and main sequence lifetimes of massive stars \citep[e.g.,][]{Levesque12, Eldridge12}. We discuss this issue in detail in \Sec{secondary}, and include a similar analysis of the ionizing spectra produced by the MESA Isochrones \& Stellar Tracks \citep[MIST,][]{Dotter16, Choi16}, which include stellar rotation, in \Sec{secondary:isochrones}.
+The Padova+Geneva isochrones used in this work do not include the effects of stellar rotation or binarity, both of which have important effects on the ionizing spectrum and main sequence lifetimes of massive stars \citep[e.g.,][]{Levesque12, Eldridge+2012, Stanway+2016}. We discuss this issue in detail in \Sec{secondary}, and in \Sec{secondary:isochrones} we include an analysis of the ionizing spectra produced by the MESA Isochrones \& Stellar Tracks \citep[MIST,][]{Dotter16, Choi16}, which include stellar rotation.
 
 \subsection{Constant Star Formation Rate}\label{sec:spectra:CSFH}
 
 Ionizing spectra from single bursts may be a good approximation for a single massive \hii region, but real galactic stellar systems can show more complexity. Star clusters do not form instantaneously, and may be better modeled by a population with a range of ages spanning a few million years. Likewise, galaxies are subject to prolonged bursts of star formation involving many clusters, and their integrated spectra may be better represented with even more extended, complex SFHs. To calculate the total emission spectrum for complex or extended SFHs, FSPS adds the nebular emission from contributing SSPs from the nebular look-up tables generated by instantaneous bursts.
 
-We illustrate the effect of extended star formation by comparing the instantaneous burst models to models generated with a constant star formation rate (CSFR) of 1 \Msun{} per year. In this analysis, the constant SFR spectra are generated with \FSPS and then fed as input to \Cloudy. For instantaneous burst models, the hardness of model spectra decreases steadily with age as the massive star population evolves off the main sequence. In models with constant SFR, however, the rate of stars forming and the rate of stars dying eventually reaches an equilibrium, after which there is little evolution in the ionizing spectrum. 
+We illustrate the effect of extended star formation by comparing the instantaneous burst models to models generated with a constant star formation rate (CSFR) of 1 \Msun{} per year. In this analysis, the constant SFR spectra are generated with \FSPS and then fed as input to \Cloudy. For instantaneous burst models, the hardness of model spectra decreases steadily with age as the massive star population evolves off the main sequence. In models with constant SFR, however, the rate of stars forming and the rate of stars dying eventually reach an equilibrium, after which there is little evolution in the ionizing spectrum. 
 
-In the top panel of \Fig{CSFHQ} we compare the time evolution of the ionizing photon rate generated by instantaneous bursts and constant SFR populations. The constant SFR models reach an equilibrium around 4 Myr, after which the ionizing photon rate is essentially constant. In the bottom panel of \Fig{CSFHQ} we show the time evolution of the EUV slope of the two models. The slope of the constant-SF model eventually reaches equilibrium around 6 Myr, with a slope that is roughly equivalent to that of a 2 Myr instantaneous burst.
+In the top panel of \Fig{CSFHQ} we compare the time evolution of \QHat{} for instantaneous bursts and constant SFR populations. The constant SFR models reach an equilibrium around 4 Myr, after which the ionizing photon rate is essentially constant. The bottom panel of \Fig{CSFHQ} shows the time evolution of the EUV slope. The slope of the constant-SF model eventually reaches equilibrium around 6 Myr, with a slope that is roughly equivalent to that of a 2 Myr instantaneous burst. \added{We note that these identified equilibrium ages correspond to a specific IMF and set of evolutionary tracks and may be different for stellar populations generated with different properties}.
 
 %-------------------------------------------------------
 % CSFH vs burst: Q
 %-------------------------------------------------------
-\begin{figure}% %[h]
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f4.pdf}
     \includegraphics[width=0.45\textwidth]{f4.pdf}
-    \caption{The evolution of ionizing spectra for instantaneous bursts (blue) and populations with constant SFRs (green). The intensity of the color shows different metallicities, with the lightest color corresponding to the highest metallicity model. \textbf{Top: } Time evolution of \QHat{}, as in \Fig{QH}. For the models with constant SFR, at ${\sim}4$ Myr the birth rate of stars balances the rate of stars leaving the main sequence, after which the ionizing spectrum shows little variation. \textbf{Bottom: } Time evolution of the EUV slope, as in \Fig{EUV}. The slope of the constant SFR model eventually reaches an equilibrium near 7 Myr with a slope consistent with a ${\sim}2$ Myr instantaneous burst.}
+    \caption{The evolution of ionizing spectra for instantaneous bursts (blue) and populations with constant SFRs (green). The color intensity shows different metallicities, where darker colors correspond to lower metallicities. \textbf{Top:} Time evolution of \QHat{}, as in \Fig{QH} for the instantaneous bursts. The constant SFR models eventually reach an equilibrium where the birth rate of stars balances the rate of stars leaving the main sequence. This occurs at ${\sim}4$ Myr, after which the ionizing spectrum shows little variation. \textbf{Bottom: } Time evolution of the EUV slope, as in \Fig{EUV} for the instantaneous bursts. The slope of the constant SFR model reaches equilibrium near $7\;$Myr, with a slope consistent with that of a ${\sim}2\;$Myr instantaneous burst.}
     \label{fig:CSFHQ}
   \end{centering}
 \end{figure}
@@ -369,7 +373,7 @@ where $\Lambda_{\mathrm{ce}}$ is the cooling from collisionally-excited metal io
 %-------------------------------------------------------
 % Coolants: fractional contribution
 %-------------------------------------------------------
-\begin{figure} %[h]
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f5.pdf}
     \includegraphics[width=0.45\textwidth]{f5.pdf}
@@ -392,7 +396,7 @@ The bottom panel of \Fig{temp} shows the time evolution of the model \hii region
 %-------------------------------------------------------
 % Temperature variations
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f6a.pdf}
     %\plotone{f6b.pdf}
@@ -417,10 +421,10 @@ Ideally, we would like temperature and density diagnostics for the same ionic st
 %-------------------------------------------------------
 % Oxygen Emissivity f(Age)
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
     \includegraphics[width=0.75\textwidth]{f7.pdf}
-    \caption{A detailed look at the structure of oxygen for a solar metallicity model with $\logU = -2.5$ at three different ages: 1, 2, and 3 Myr. The top panel shows the ionization structure and the bottom panel shows the location in the cloud where important oxygen lines are produced, as calculated by the line emissivity integrated over each volumetric shell in the cloud. The dark-grey shaded region indicates the location of the helium ionization zone and the light grey shaded region shows the location of the hydrogen ionization zone. At 1 Myr, oxygen is doubly ionized throughout the \hii region; at 3 Myr oxygen is doubly ionized only at the innermost radii. While the oxygen lines are strong at all ages, the production site of the various lines changes with time, with \oiii{} emission produced in the innermost regions of the cloud and \oi{} produced in the outermost region.}
+    \caption{A detailed look at the structure of oxygen for a solar metallicity model with $\logU = -2.5$ at three different ages: 1, 2, and 3 Myr. \textbf{Top:} The ionization structure of the \hii region. The dark- and light-grey shaded regions show location of the helium and hydrogen ionization zones, respectively. Oxygen is doubly ionized throughout the \hii region at 1 Myr, but only in the innermost region at 3 Myr, reflecting the softening of the ionizing spectrum with age. \textbf{Bottom:} The location where important oxygen lines are produced, calculated by integrating the line emissivity over each volumetric shell in the cloud. The emission from various transitions generally follows the ionization structure of the cloud. This implies that different lines can probe physically distinct parts of the \hii region: in the 3 Myr model, \oiii{} emission is produced in the innermost parts of the cloud while \oi{} emission is produced in the outermost parts.}
     \label{fig:ionEmisAge}
   \end{centering}
 \end{figure*}
@@ -435,10 +439,10 @@ In \Fig{ionEmisZ} we show the oxygen ionization structure and line emissivity of
 %-------------------------------------------------------
 % Oxygen Emissivity f(Z)
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
     \includegraphics[width=0.75\textwidth]{f8.pdf}
-    \caption{A detailed look at the structure of oxygen for a 3 Myr, $\logU = -2.5$ model at three different metallicities: -1.0, -0.3, 0.0. Just as in \Fig{ionEmisAge}, the top panel shows the ionization structure and the bottom panel shows the integrated emissivity of various oxygen transitions. The difference in temperature in the models at different metallicities produces a different ionization structure. As the temperature decreases as the metallicity increases, the fraction of doubly-ionized oxygen decreases as well, which ultimately changes the line strengths.}
+    \caption{A detailed look at the structure of oxygen for a 3 Myr, $\logU = -2.5$ model at three different metallicities: -1.0, -0.3, 0.0. Just as in \Fig{ionEmisAge}, the top panel shows the ionization structure and the bottom panel shows the integrated emissivity of various oxygen transitions. Here, the change in metallicity changes the temperature of the \hii region, which ultimately alters the ionization structure of the cloud. Lower metallicities produce higher temperatures, increasing the fraction of doubly-ionized oxygen.}
     \label{fig:ionEmisZ}
   \end{centering}
 \end{figure*}
@@ -452,14 +456,14 @@ Analytic prescriptions for nebular emission generally assume that the number of 
 
 However, the conversion between \QH{} and $L_{\mathrm{H}\alpha}$ is not one-to-one, because the recombination coefficient, $\alpha_{\mathrm{B}}$, is a function of temperature. To get the correct luminosity of \ha{} and \hb{}, it is essential to factor in both the number of ionizing photons and the temperature of the nebula. This is explicitly self-consistent in our nebular model, which adds the nebular emission to the same SSP ($t$, $Z$) as the one that input to \Cloudy, preserving the temperature sensitivity of the recombination lines as a function of age and metallicity. We note that the \Popstar models do include a metallicity-dependent \Te{} in their recombination coefficient, but not an age-dependent \Te{}.
 
-In \Fig{RecLines}, we show the \ha{} luminosity of the model \hii regions as a function of age, metallicity, and ionization parameter. We have normalized the \ha{} luminosities by \QH{} to demonstrate the magnitude of the variations in \ha{} luminosity driven by changes in temperature. At constant age and ionization parameter, metallicity variations lead to a factor of three changes in the recombination line strength. The softening of the ionizing spectrum with time leads can change the recombination line strengths by several orders of magnitude at fixed metallicity and ionization parameter. 
+\added{In \Fig{RecLines}, we show the \ha{} luminosity of the model \hii regions as a function of age, metallicity, and ionization parameter. We have normalized the \ha{} luminosities by \QH{} to demonstrate the magnitude of the variations in \ha{} luminosity driven by changes in temperature. At constant age and ionization parameter, metallicity variations lead to a factor of three changes in the recombination line strength. The softening of the ionizing spectrum with time leads can change the recombination line strengths by several orders of magnitude at fixed metallicity and ionization parameter.}\explain{Altered so that one figure explains what two figures were previously being used to do.}
 
-Accounting for the age and metallicity dependent changes in \ha{} luminosity is one of the strengths of our nebular model. Metallicity variations lead to factor of three changes in recombination line strength. Age variations on order of a few Myr produce an order of magnitude change in recombination line strength. Both of these will impact \ha-based SFR indicators that do not account for the temperature dependence of recombination lines.
+Accounting for the age and metallicity dependent changes in \ha{} luminosity is one of the strengths of our nebular model. Metallicity variations lead to factor of three changes in recombination line strength. Age variations on order of a few Myr produce an order of magnitude change in recombination line strength. Both of these will impact \ha{}-based SFR indicators that do not account for the temperature dependence of recombination lines.
 
 %-------------------------------------------------------
 % Recombination Line Strength; RecLine / Q
 %-------------------------------------------------------
-\begin{figure} %[h]
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f9.pdf}
     \includegraphics[width=0.45\textwidth]{f9.pdf}
@@ -479,16 +483,16 @@ The free-bound continuum is produced when a free electron recombines into an exc
 
 The free-free continuum, which is the result of a free electron scattering off of an ion or proton, produces a roughly power-law ($\propto \nu^{-2}$) distribution of photon energies and is also sensitive to the temperature of the \hii region. While comparatively smaller in magnitude, two-photon continuum can be important in the UV. The two-photon continuum is the result of a bound-bound process, where the excited 2s state of hydrogen decays to the 1s state by the simultaneous emission of two photons. The energy of the two photons totals to $h\nu_{\mathrm{Ly}\alpha}$, producing a bump in the UV portion of the spectrum.
 
-In the top panel of \Fig{nebCont} we show the nebular continuum spectrum for for a 1 and 3 Myr solar metallicity model. The overall intensity of the nebular continuum spectrum is set by the model ionization parameter, since recombination emission depends on the number of incident ionizing photons. At fixed metallicity and age, the continuum spectrum is nearly identical modulo a scaling factor, \QHat{}/\QH{}. Several spectral features are easily discernible: bound-free transitions produce the characteristic sawtooth edges across the spectrum; the two-photon continuum is responsible for the bump at ${\sim}1500 \ang$.
+In the top panel of \Fig{nebCont} we show the nebular continuum spectrum for \deleted{for} a 1 and 3 Myr solar metallicity model. The overall intensity of the nebular continuum spectrum is set by the model ionization parameter, since recombination emission depends on the number of incident ionizing photons. At fixed metallicity and age, the continuum spectrum is nearly identical modulo a scaling factor, \QHat{}/\QH{}. Several spectral features are easily discernible: bound-free transitions produce the characteristic sawtooth edges across the spectrum; the two-photon continuum is responsible for the bump at ${\sim}1500 \ang$.
 
 %-------------------------------------------------------
 % Neb Continuum
 %-------------------------------------------------------
-\begin{figure*} %[h]
+\begin{figure*}[!htbp]
  \begin{centering}
     %\plotone{f10.pdf} 
-    \includegraphics[width=0.8\textwidth]{f10.pdf}
-    \caption{The nebular continuum emission spectrum. \textbf{Top:} Continuum emission spectrum for a 1 and 3 Myr model at solar metallicity and varying \U{}. The free-bound continuum is a recombination process and the intensity of emission scales with ionization parameter, we have removed the \U{} dependence by normalizing the continuum by $\QHat/\QH$. \textbf{Bottom:} Normalized continuum emission spectrum as a function of model metallicity for a 3 Myr SSP at $\logU=-1.0$ for metallicities between -1.0 and solar. Each metallicity is color-coded by the volume averaged model temperature. The slope and sharpness of the recombination edges varies in response to the thermalization of electrons to local gas temperature. The dashed lines indicate the wavelengths of various hydrogen series limits ($n=\infty \rightarrow \{1,2,3,\ldots\}$)}
+    \includegraphics[width=0.75\textwidth]{f10.pdf}
+    \caption{The nebular continuum emission \added{is a combination of bound-free, free-free and two-photon emission processes}. The dashed lines indicate the wavelength of various hydrogen series limits ($n=\infty \rightarrow \{1,2,3,\ldots\}$). \textbf{Top:} Continuum emission spectrum for a 1 and 3 Myr model at solar metallicity and varying \U{}. \replaced{The free-bound continuum is a recombination process and the intensity of emission scales with ionization parameter, we have removed the \U{} dependence by normalizing the continuum by $\QHat/\QH$.}{The free-bound continuum is a recombination process, thus the intensity of continuum emission scales with model ionization parameter. To remove the \U{} dependence we normalize the continuum by $\QHat/\QH$.} \textbf{Bottom:} Normalized continuum emission spectrum as a function of model metallicity for a 3 Myr SSP at $\logU=-1.0$ for metallicities between -1.0 and solar. The slope and sharpness of the recombination edges varies in response to the thermalization of electrons to local gas temperature. \replaced{Each metallicity is color-coded by the volume averaged model temperature.}{To emphasize the relationship between gas temperature and gas metallicity, each metallicity is color-coded by \Te{}, the volume-averaged electron temperature of the gas.}}
     \label{fig:nebCont}
  \end{centering}
 \end{figure*}
@@ -503,14 +507,14 @@ Nebular continuum emission is clearly strongest at high ionization parameters an
 %-------------------------------------------------------
 % Neb Continuum Spec
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f11.pdf}
-    \includegraphics[width=0.8\textwidth]{f11.pdf}
+    \includegraphics[width=0.45\textwidth]{f11.pdf}
     \caption{NUV to NIR spectra of models with $\logU=-1$ at 1 Myr (left) and 3 Myr (right) before and after adding nebular line and continuum emission for solar metallicity (red) and \logZeq{-1.0} (blue). The 1 Myr models produce more nebular line and continuum emission than the 3 Myr models.}
     \label{fig:nebSpecDiff}
   \end{centering}
-\end{figure*}
+\end{figure}
 %-------------------------------------------------------
 
 \citet{Reines10} found that the nebular continuum contributed significantly ($\sim40$\%) to the NUV-NIR broadband flux of young ($<3$ Myr) clusters, especially near the Balmer break. In \Fig{nebFracFlu}, we show the fractional contribution to the total flux as a function of model age for several wavelength ranges from the EUV to the NIR at solar metallicity and fixed ionization parameter($\logU=-2.5$). Our emission models agree with \citet{Reines10}, with continuum and line emission contributing at least 30\% of the total flux at young ages in every wavelength range considered. The GALEX NUV panel in \Fig{nebFracFlu} shows strong continuum emission but no significant line emission. This is just due to the fact that there are few strong emission lines exist in this particular bandpass, which misses \Lya.
@@ -518,19 +522,30 @@ Nebular continuum emission is clearly strongest at high ionization parameters an
 The largest contribution from line and continuum emission relative to the stellar emission is seen in the optical and NIR. Nebular line and continuum emission contributes $95\%$ of the total flux in the Spitzer 3.6 and 4.5$\mu$m bands for several million years, with continuum emission producing $70\%$ of the total flux. The 3.6 and 4.5$\mu$m bands are thought to be a stable tracer of light from stellar populations and are often used to make stellar mass estimates. \Fig{nebFracFlu} demonstrates that the ability of these bands to accurately measure stellar mass is hindered if there has been any star formation in the last 10 Myr.
 
 %-------------------------------------------------------
-% Neb Continuum flux contribition
+% Fractional Flux: Burst
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
     %\plotone{f12.pdf}
-    \includegraphics[width=0.8\textwidth]{f12.pdf}
+    \includegraphics[width=0.75\textwidth]{f12.pdf}
     \caption{The fractional contribution of starlight (red), nebular continuum (blue) and nebular line emission (green) to the total flux, as a function of SSP age for a model at \logZeq{0} (top) and \logZeq{-1} (bottom) at fixed ionization parameter ($\logU=-1$). Each panel shows a different wavelength range, matched to the wavelength coverage of well-used filters. From left to right: GALEX NUV, HST F475W, HST F814W, Spitzer 3.6$\mu$m, Spitzer 4.5$\mu$m. In all panels, nebular line and continuum contributes $>20\%$ of the flux for models younger than 5 Myr.}
     \label{fig:nebFracFlu}
   \end{centering}
 \end{figure*}
 %-------------------------------------------------------
 
-We show the fractional contribution to the broadband flux for a \logZeq{-1} model in the bottom panel of \Fig{nebFracFlu}. The broad behavior in the low metallicity model is nearly identical to the solar metallicity model. We might expect line emission to contribute a larger fraction of the total flux in the low-metallicity model, since oxygen emission is generally stronger at sub-solar metallicities; this effect is only a few percent. The most noticeable difference between the high and low metallicity models is the time dependence of the nebular emission. In the low metallicity model, nebular emission contributes a significant portion of the total flux for longer, by a few Myr. Lower metallicity stellar populations have extended main sequence lifetimes, which in turn extends the timescale for nebular emission. This is an important feature of our nebular model, which links the stellar and nebular abundances, and ultimately allows for a more accurate accounting of the total flux from galaxies.
+%-------------------------------------------------------
+% Fractional Flux: CSFR
+%-------------------------------------------------------
+\begin{figure*}[!htbp]
+  \begin{centering}
+    \includegraphics[width=0.75\textwidth]{f13.pdf}
+    \caption{The fractional contribution of starlight (red), nebular continuum (blue) and nebular line emission (green) to the total flux, as a function of age for a constant SFR model at \logZeq{0} (top) and \logZeq{-1} (bottom) at fixed ionization parameter ($\logU=-1$). Each panel shows a different wavelength range, matched to the wavelength coverage of well-used filters. From left to right: GALEX NUV, HST F475W, HST F814W, Spitzer 3.6$\mu$m, Spitzer 4.5$\mu$m. In all panels, nebular line and continuum contributes $>20\%$ of the flux for models younger than 5 Myr.}
+    \label{fig:nebFracFlu2}
+  \end{centering}
+\end{figure*}
+%-------------------------------------------------------
+We show the fractional contribution to the broadband flux for a \logZeq{-1} model in the bottom panel of \Fig{nebFracFlu}. The broad behavior in the low metallicity model is nearly identical to the solar metallicity model. We might expect line emission to contribute a larger fraction of the total flux in the low-metallicity model, since oxygen emission is generally stronger at sub-solar metallicities; this effect is only a few percent. The most noticeable difference between the high and low metallicity models is the time dependence of the nebular emission. In the low metallicity model, nebular emission contributes a significant portion of the total flux for longer, by a few Myr. Lower metallicity stellar populations have extended main sequence lifetimes, which in turn extends the timescale for nebular emission. This is an important feature of our nebular model, which links the stellar and nebular abundances, and ultimately allows for a more accurate accounting of the total flux from galaxies.\explain{This section was substantially rewritten to reflect comments from the referee. We now include a comparison of burst and CSFR models, and downplay the NIR-stellar mass connections for the burst.}
 
 \subsection{Line Emission from the Model HII Regions}\label{sec:models:lines}
 
@@ -543,10 +558,9 @@ With an understanding of the physical properties of the model \hii regions, we c
 %-------------------------------------------------------
 % Line Variation
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
-    %\plotone{f13.pdf}
-    \includegraphics[width=0.8\textwidth]{f13.pdf}
+    \includegraphics[width=0.75\textwidth]{f14.pdf}
     \caption{Emission line strength for \hb{}$\,\lambda4861\ang$, \oiii{}$\,\lambda5007\ang$, \ha{}$\,\lambda6563\ang$, \nii{}$\,\lambda6584\ang$, and \sii{}$\,\lambda6731\ang$ as a function of model age, color-coded by model metallicity. The transparency of the line indicates the ionization parameter, which varies from $\logU{}=-1$ (opaque) to $\logU{}=-4$ (transparent).}
     \label{fig:lineVar}
   \end{centering}
@@ -554,13 +568,13 @@ With an understanding of the physical properties of the model \hii regions, we c
 %-------------------------------------------------------
 
 %-------------------------------------------------------
-% Line Ratios: OIII/Hb
+% Line Ratios: OIII/Hb, OIII/OII, NII/Ha
 %-------------------------------------------------------
-\begin{figure*}[Ht!]
+\begin{figure*}[!htbp]
   \begin{centering}
-    \includegraphics[width=0.3\textwidth]{f14a.pdf}
-    \includegraphics[width=0.3\textwidth]{f14b.pdf}
-    \includegraphics[width=0.3\textwidth]{f14c.pdf}
+    \includegraphics[width=0.25\textwidth]{f15a.pdf}
+    \includegraphics[width=0.25\textwidth]{f15b.pdf}
+    \includegraphics[width=0.25\textwidth]{f15c.pdf}
     \caption{Line ratios as a function of metallicity and ionization parameter for a 1 Myr model: \oiiihb{} (left); \oiiioii{} (middle); \niiha{} (right).}
     \label{fig:LineRatios}
   \end{centering}
@@ -590,10 +604,9 @@ In the right panel of \Fig{LineRatios} we show the \niiha{} line ratio as a func
 %-------------------------------------------------------
 % BPT warm up: dAge, dZ, dU
 %-------------------------------------------------------
-\begin{figure*}[ht!]
+\begin{figure*}[!htbp]
     \begin{centering}
-        %\plotone{f15.pdf}
-        \includegraphics[width=0.8\textwidth]{f15.pdf}
+        \includegraphics[width=0.75\textwidth]{f16.pdf}
         \caption{The effect of varying different model parameters on the resultant BPT diagram location at 1 and 2 Myr for a fiducial model with \logZeq{-0.1}, and $\logU = -2.5$ (shown with the star marker). The greyscale 2D histogram shows the number density of SDSS star-forming galaxies. \textbf{Left:} Varying the ionization parameter of the model while holding metallicity and ionizing spectrum constant. \textbf{Right:} Varying the metallicity of the model while holding \U{} constant.}
         \label{fig:BPTintro}
     \end{centering}
@@ -607,7 +620,7 @@ The BPT diagram and diagnostic diagrams using other combinations of line ratios 
 
 \subsection{The Observational Comparison Sample}
 
-We test our predicted emission line luminosities against those measured from spectroscopic observations of both \hii regions and star-forming galaxies to demonstrate that the \FSPS nebular model is capable of reproducing observed emission from both single \hii regions and complex populations of multiple \hii regions. Even though we do not know the \U{}, $Z$, $t$ values of the observed objects independently, theoretical grids should at least be able to span the range of observed line ratios using reasonable physical parameters.  The \hii region comparison spectra from \citet{vanzee98}, consist of observations of massive \hii regions in nearby galaxies and are a standard comparison set for nebular emission models \citep{Dopita00, Kewley06, Levesque10, Dopita13}. For star-forming galaxies, SDSS galaxy spectra are another common comparison set used in optical line ratio diagnostic diagrams \citep{Dopita00, Kewley06, Levesque10}. The SDSS spectra typically cover large areas of a galaxy and are likely to contain emission from multiple \hii regions.
+We test our predicted emission line luminosities against those measured from spectroscopic observations of both \hii regions and star-forming galaxies to \replaced{demonstrate}{show} that the \FSPS nebular model \replaced{is capable of reproducing}{can reproduce} observed emission from both single \hii regions and complex populations of multiple \hii regions. Even though we do not know the \U{}, $Z$, $t$ values of the observed objects independently, theoretical grids should at least be able to span the range of observed line ratios using reasonable physical parameters. The \hii region comparison spectra from \citet{vanzee98}, consist of observations of massive \hii regions in nearby galaxies and are a standard comparison set for nebular emission models \citep{Dopita00, Kewley06, Levesque10, Dopita13}. For star-forming galaxies, SDSS galaxy spectra are another common comparison set used in optical line ratio diagnostic diagrams \citep{Dopita00, Kewley06, Levesque10}. The SDSS spectra typically cover large areas of a galaxy and are likely to contain emission from multiple \hii regions.
 
 The \citet{vanzee98} catalog reports emission line intensities with contributions from both doublet lines for \nii{} (6548, 6584) and \oiii{} (4959, 5007). Standard diagnostic diagrams only use the stronger of the two, \nii{}\lam{6584} and \oiii{}\lam{5007}; we remove the contribution from the weaker line using the theoretical intensity ratio between the two lines (e.g., $I_{5007} = 2.88\;I_{4959}$). This results in a decrease in the \niiha{} and \oiiihb{} ratio of $\sim \logten \left(3/4\right)$ or $\sim 0.1$ dex.
 
@@ -617,10 +630,9 @@ The star-forming galaxy sample is derived from galaxy spectra from the Sloan Dig
 %-------------------------------------------------------
 % BPT: age evolution
 %-------------------------------------------------------
-\begin{figure*}[ht!]
+\begin{figure*}[!htbp]
     \begin{centering}
-        %\plotone{f16.pdf}
-        \includegraphics[width=0.8\textwidth]{f16.pdf}
+        \includegraphics[width=0.75\textwidth]{f17.pdf}
         \caption{BPT diagram for instantaneous bursts (top) and constant SFR models (bottom) at 1, 3, and 5 Myr. The greyscale 2D histogram shows SDSS star-forming galaxies and the white squares are massive extragalactic \hii regions. The solid black line is the extreme starburst classification line from \citet{Kewley01} and the dashed line is the pure star formation classification line from \citet{Kauffmann03a}. In all panels, the star marker in all panels shows the location of a model with \logZeq{0.2} and $\logU=-4$. After $\sim3$ Myr the instantaneous burst spectra are no longer hard enough to produce line ratios consistent with the star-forming sequence.}
         \label{fig:BPTage}
     \end{centering}
@@ -639,10 +651,9 @@ The bottom panel of \Fig{BPTage} shows the time evolution of the \logz{}-\logU{}
 %-------------------------------------------------------
 % dopita CSFH BPT
 %-------------------------------------------------------
-\begin{figure} [h!]
+\begin{figure}[!htbp]
   \begin{centering}
-    %\plotone{f17.pdf}
-    \includegraphics[width=0.4\textwidth]{f17.pdf}
+    \includegraphics[width=0.45\textwidth]{f18.pdf}
     \caption{BPT diagram comparing the constant SFR grid with the grid from \citet{Dopita13} (gray), which uses the \Mappings photoionization code.The ionization parameter varies from $\logU=-1.5$ (dark blue) to $\logU=-3.5$ (light blue) and metallicity varies from \logZeq{-1} (purple) to \logZeq{0.2} (yellow). The solid black line shows the extreme starburst classification line from \citet{Kewley01} and the dashed line is the pure star formation classification line from \citet{Kauffmann03a}. There is good overall agreement between the two grids, and both show similar trends with ionization parameter and metallicity.}
     \label{fig:CSFHdop}
   \end{centering}
@@ -662,10 +673,9 @@ While the BPT diagram is the most widely used diagnostic diagram, there are many
 %-------------------------------------------------------
 % N2O2
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
-    %\plotone{f18.pdf}
-    \includegraphics[width=0.45\textwidth]{f18.pdf}
+    \includegraphics[width=0.45\textwidth]{f19.pdf}
     \caption{N2O2 vs. O3O2 for instantaneous burst models (top) and constant SFR (bottom). Ionization parameter varies from $\U=-1$ (dark blue) to $\U=-4$ (light blue). Metallicity varies from \logZeq{-1} is (purple) to \logZeq{0.2} (yellow). The grids are compared to massive \hii regions (white squares) and star-forming galaxies (grayscale 2D histogram).}
     \label{fig:NIIOII}
   \end{centering}
@@ -679,10 +689,9 @@ In \Fig{NeIII}, we show the Ne3O2 and O3O2 line ratios produced by our $\U-Z$ mo
 %-------------------------------------------------------
 % NeIII/OII vs OIII/OII
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
-    %\plotone{f19.pdf}
-    \includegraphics[width=0.4\textwidth]{f19.pdf}
+    \includegraphics[width=0.45\textwidth]{f20.pdf}
     \caption{Ne3O2 vs. O3O2 line ratios for instantaneous burst (top) and constant SFR (bottom) models. Ionization parameter varies from $\logU{}=-1$ (dark blue) to $\logU{}=-4$ (light blue). Metallicity varies from \logZeq{-2.0} (purple) to \logZeq{0.2} (yellow). The white squares are massive extragalactic \hii regions. Previous models were offset from the data by $\sim 0.6$ dex, our model shows considerable improvement and reduces the offset to $\sim 0.2$ dex.}
     \label{fig:NeIII}
   \end{centering}
@@ -691,12 +700,11 @@ In \Fig{NeIII}, we show the Ne3O2 and O3O2 line ratios produced by our $\U-Z$ mo
 
 For completeness, in Figs.~\ref{fig:alt1} \& \ref{fig:alt2} we show model grids for two additional common diagnostic diagrams.
 %-------------------------------------------------------
-% diff Ratios
+% R23
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
-    %\plottwo{f20a.pdf}{f20b.pdf}
-    \includegraphics[width=0.45\textwidth]{f20a.pdf}
+    \includegraphics[width=0.45\textwidth]{f21.pdf}
     \caption{$\U-Z$ model grids for 1 Myr instantaneous burst (top) and 4 Myr constant SFR populations (bottom). The blue shows variations in \logU{}, from $\logU{}=-1$ (dark blue) to $\logU{}=-4$ (light blue). Metallicity varies from \logZeq{-2.0} (purple) to \logZeq{0.2} (yellow). The white squares are massive extragalactic \hii regions and the grayscale 2D histogram shows the number density of SDSS star-forming galaxies.}
     \label{fig:alt1}
   \end{centering}
@@ -705,10 +713,9 @@ For completeness, in Figs.~\ref{fig:alt1} \& \ref{fig:alt2} we show model grids 
 %-------------------------------------------------------
 % diff Ratios
 %-------------------------------------------------------
-\begin{figure}[H!]
+\begin{figure}[!htbp]
   \begin{centering}
-    %\plottwo{f20a.pdf}{f20b.pdf}
-    \includegraphics[width=0.45\textwidth]{f20b.pdf}
+    \includegraphics[width=0.45\textwidth]{f22.pdf}
     \caption{$\U-Z$ model grids for 1 Myr instantaneous burst (top) and 4 Myr constant SFR populations (bottom). The blue shows variations in \logU{}, from $\logU{}=-1$ (dark blue) to $\logU{}=-4$ (light blue). Metallicity varies from \logZeq{-2.0} (purple) to \logZeq{0.2} (yellow). The white squares are massive extragalactic \hii regions and the grayscale 2D histogram shows the number density of SDSS star-forming galaxies. The black line shows the pure star formation classification line from \citet{Kauffmann03a}.}
     \label{fig:alt2}
   \end{centering}
@@ -730,14 +737,13 @@ We do not compare different stellar atmospheric models since this is not current
 The Padova+Geneva model uses 2007 Padova isochrones with high-mass-loss-rate Geneva isochrones adopted for $M > 70 M_{\sun}$. For the comparisons made in this work, both the Padova+Geneva models and the MIST models use a Kroupa IMF and identical stellar atmospheres. O-star spectra are from WM-BASIC \citep[][updates from Eldridge et al., \emph{in prep}]{Pauldrach01}; Wolf-Rayet stellar spectra are from CMFGEN \citep{HillierMiller}; post-AGB stellar isochrones are from \citep{Vassiliadis} with spectra from \citep{Rauch03}.
 
 %-------------------------------------------------------
-% ISOCHRONES: Q , EUV slope
+% ISOCHRONES: Q , EUV slope ----------- 
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
-    %\plottwo{f21a.pdf}{f21b.pdf}
-    \includegraphics[width=0.45\textwidth]{f21a.pdf}
-    \includegraphics[width=0.45\textwidth]{f21b.pdf}
-    \caption{\textbf{Left:} The production rate of hydrogen-ionizing photons per solar mass in single-burst populations for a range of metallicities. \textbf{Right:} The slope of the EUV portion of the spectrum for a range of metallicities. The MIST models include rotation and produce larger \QH{} and harder ionizing spectra.}
+    \includegraphics[width=0.45\textwidth]{f23a.pdf}
+    \includegraphics[width=0.45\textwidth]{f23b.pdf}
+    \caption{\textbf{Left:} The production rate of hydrogen-ionizing photons per solar mass in single-burst populations for a range of metallicities. \textbf{Right:} The slope of the EUV portion of the spectrum for a range of metallicities. The MIST models include rotation and produce larger \QH{} and harder ionizing spectra \added{compared to the Padova+Geneva models (shown in grey).}}
     \label{fig:Qmist}
   \end{centering}
 \end{figure*}
@@ -754,10 +760,9 @@ The effect of WR stars at 5 Myr for the Padova+Geneva models in \Fig{BPTmistAge}
 %-------------------------------------------------------
 % ISOCHRONES: MIST BPT Age Evolution
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
-    %\plotone{f22.pdf}
-    \includegraphics[width=0.8\textwidth]{f22.pdf}
+    \includegraphics[width=0.75\textwidth]{f24.pdf}
     \caption{Time evolution in the BPT diagram comparing models run with MIST (red) and Padova+Geneva (blue) evolutionary tracks. The solid black line shows the extreme starburst classification line from \citet{Kewley01} and the dashed line is the pure star formation classification line from \citet{Kauffmann03a}. The  grayscale 2D histogram shows the number density of SDSS star-forming galaxies. The models agree well at young ages but evolve differently with time. The MIST models, which account for stellar rotation, produce more ionizing photons and harder ionizing spectra (seen in \Fig{Qmist}). The Padova+Geneva models begin to fall away from the star-forming locus around 2 Myr but the MIST models continue to reproduce the star-forming sequence until ${\sim}4$ Myr. The sudden increase in the Padova+Geneva grid at 5 Myr is due entirely to the presence of WR stars.}
     \label{fig:BPTmistAge}
   \end{centering}
@@ -774,10 +779,9 @@ For completeness, in \Fig{MIST:altRatios} we show model grids for several additi
 %-------------------------------------------------------
 % ISOCHRONES: MIST HeII
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
-    %\plotone{f23.pdf}
-    \includegraphics[width=0.8\textwidth]{f23.pdf}
+    \includegraphics[width=0.75\textwidth]{f25.pdf}
     \caption{\heii\lam{1640}\,/\,\hb{} (He2) vs. O3O2 for the Padova+Geneva (gray) and MIST model grids as a function of age. The ionization parameter varies from $\logU{}=-1$ (dark blue) to $\logU{}=-4$ (light blue). Metallicity varies from \logZeq{-2} (purple) to \logZeq{0.5} (yellow). The data points are from \citet{Steidel16} for a $z=2$ star forming galaxy. The black square shows the measured line strengths; the orange and red points show the assumed residual nebular \heii{} emission after accounting for stellar \heii{} emission from the BPASS models. While the Padova+Geneva models cannot account for the observed He2 strengths, the MIST models can fully account for high observed He2 line ratios between 3 and 5 Myr.}
     \label{fig:MIST:HeII}
   \end{centering}
@@ -785,11 +789,10 @@ For completeness, in \Fig{MIST:altRatios} we show model grids for several additi
 %-------------------------------------------------------
 % diff Ratios
 %-------------------------------------------------------
-\begin{figure*}
+\begin{figure*}[!htbp]
   \begin{centering}
-    %\plottwo{f24a.pdf}{f24b.pdf}
-    \includegraphics[width=0.45\textwidth]{f24a.pdf}
-    \includegraphics[width=0.45\textwidth]{f24b.pdf}
+    \includegraphics[width=0.45\textwidth]{f26a.pdf}
+    \includegraphics[width=0.45\textwidth]{f26b.pdf}
     \caption{Diagnostic diagrams for the MIST $\U-Z$ model grids for 1 Myr instantaneous burst populations. The blue shows variations in \logU{}, with the darkest blue representing the most intense ionization parameter, $\logU{}=-1$. Metallicity varies from \logZeq{-2} (purple) to \logZeq{0.5} (yellow). The data points include \hii regions (white squares) and SDSS star-forming galaxies (binned gray squares).}
     \label{fig:MIST:altRatios}
   \end{centering}
@@ -801,19 +804,18 @@ For completeness, in \Fig{MIST:altRatios} we show model grids for several additi
 % ------------------------------------------------------------------------------
 \subsection{Old Stellar Contribution}\label{sec:secondary:old}
 
-The region of the BPT diagram between the star-forming sequence and the AGN sequence is occupied by objects classified as ``low ionization emission regions''\citep[LIERs, ][]{Belfiore16}\footnote{Low ionization nuclear emission regions \citep[LINERs, ][]{Heckman1980} refers to centrally concentrated low ionization emission, which may still be attributed to weak AGN-related activity.}. LIER-like emission is characterized by strong low-ionization forbidden lines (e.g., \nii{}, \sii{}, \oii{}, \oi{}) relative to recombination lines, and was originally discovered in the nuclear regions of galaxies and attributed to AGN-related activity \citep{Kauffmann03b, Kewley06, Ho08}. While some cases are certainly still driven by the presence of a weak AGN, the discovery of spatially extended (${\sim}$kpc scales) LIER-like emission has led to work suggesting that hot, evolved stars could be responsible for the ionizing radiation in other cases \citep{Singh13, Belfiore16}. The leading candidate for the ionizing source is the population of post-AGB stars \citep{Binette94, Sarzi10, Yan12}. Extreme horizontal branch stars may also be hot enough to play a role in LIER-like emission lines, but considering their effect is beyond the scope of this paper.
+The region of the BPT diagram between the star-forming sequence and the AGN sequence is occupied by objects classified as ``low ionization emission regions''\citep[LIERs, ][]{Belfiore16}\footnote{Low ionization nuclear emission regions \citep[LINERs, ][]{Heckman1980} refers to centrally concentrated low ionization emission, which are likely attributed to weak AGN-related activity.}. LIER-like emission is characterized by strong low-ionization forbidden lines (e.g., \nii{}, \sii{}, \oii{}, \oi{}) relative to recombination lines, and was originally discovered in the nuclear regions of galaxies and attributed to AGN-related activity \citep{Kauffmann03b, Kewley06, Ho08}. While some cases are certainly still driven by the presence of a weak AGN, the discovery of spatially extended (${\sim}$kpc scales) LIER-like emission has led to work suggesting that hot, evolved stars could be responsible for the ionizing radiation in other cases \citep{Singh13, Belfiore16}. The leading candidate for the ionizing source is the population of post-AGB stars \citep{Binette94, Sarzi10, Yan12}. Extreme horizontal branch stars have also been suggested candidates, but considering their effect is beyond the scope of this paper.
 
 Post-AGB stars are stars that have left the AGB, evolving horizontally across the HR diagram towards very hot temperatures ($\sim10^5$ K) before cooling down to form white dwarfs, with a fraction of the post-AGB population forming planetary nebulae. The exposed cores of post-AGB stars are hot enough to ionize hydrogen and thus could produce a radiation field capable of ionizing the surrounding ISM, provided that there are enough post-AGB stars. 
 
 Post-AGB stars are not capable of matching the ionizing flux produced by a single O-star; their strength lies in numbers. The progenitors of these stars have initial masses from 1-5\Msun{}, and are much more common than O-type stars. For early-type galaxies where the bulk of the stellar population is old, AGB and post-AGB stars can contribute a significant portion of the total galaxy luminosity. \citet{Yan12} measured the ionization parameter and gas density for galaxies with LIER-like emission and compared it to the typical numbers of ionizing photons produced by post-AGB stars. They deduced that the ionization parameter for post-AGB stars falls short of the required value by a factor of 10, implying that the gas geometry must be quite close to the stars themselves.
 
 %-------------------------------------------------------
-% pAGB BPT
+% pAGB BPT Rinner, nH
 %-------------------------------------------------------
-\begin{figure} [ht]
+\begin{figure}[!htbp]
   \begin{centering}
-    %\plotone{f25.pdf}
-    \includegraphics[width=0.45\textwidth]{f25.pdf}
+    \includegraphics[width=0.45\textwidth]{f27.pdf}
     \caption{BPT diagram for an ionizing spectrum produced by a 3 Gyr solar metallicity SSP that includes post-AGB stars. The grayscale 2D histogram is star forming galaxies from SDSS. The solid black line shows the extreme starburst classification line from \citet{Kewley01} and the dashed line is the pure star formation classification line from \citet{Kauffmann03a}. Our post-AGB star models do produce line ratios consistent with LIER-like emission, but large numbers of post-AGB stars (at least M$_{\mathrm{initial}} \sim 10^6\Msun{}$) would be required to produce enough ionizing photons.}
     \label{fig:pAGBBPT}
   \end{centering}
@@ -831,12 +833,12 @@ The line ratios in \Fig{pAGBBPT} show little sensitivity to the star-gas geometr
 %-------------------------------------------------------
 % pAGB spectrum
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f26a.pdf}
     %\plotone{f26b.pdf}
-    \includegraphics[width=0.45\textwidth]{f26a.pdf}\\
-    \includegraphics[width=0.45\textwidth]{f26b.pdf}
+    \includegraphics[width=0.45\textwidth]{f28a.pdf}\\
+    \includegraphics[width=0.45\textwidth]{f28b.pdf}
     \caption{\textbf{Top:} The effect of hot, evolved stars on the ionizing spectrum. The default default spectrum for a 3 Gyr SSP at solar metallicity is shown shown in black. The weight of the post-AGB phase is modulated from 1 (full inclusion of post-AGB stars) to $10^{-4}$, which decreases the amount of EUV flux relative to the rest of the population. \textbf{Bottom:} BPT diagram for photoionization models where \U{} and the weight of the post-AGB phase are varied. The solid black line shows the extreme starburst classification line from \citet{Kewley01} and the dashed line is the pure star formation classification line from \citet{Kauffmann03a}. The grayscale 2D histogram shows the number density of SDSS star-forming galaxies. The \citet{Vassiliadis} tracks used for post-AGB stars must be correct within a factor of two if post-AGB stars are responsible for LIER-like emission.}
     \label{fig:hotstars}
   \end{centering}
@@ -847,17 +849,17 @@ Another major uncertainty associated with the interpretation of LIER-like emissi
 
 To understand the sensitivity of LIER-like emission to the underlying stellar model, we generate ionizing spectra with varying contribution from post-AGB stars using the {\tt pagb} parameter in \FSPS. This parameter specifies the weight given to the post-AGB star phase, where {\tt pagb=0.0} turns off post-AGB stars and {\tt pagb=1.0} implies that the \citet{Vassiliadis} tracks are implemented as-is, the default behavior in \FSPS. In the top panel of \Fig{hotstars} we show the ionizing spectrum produced by a 3 Gyr SSP with {\tt pagb} set to 1, $10^{-1}$, $10^{-2}$, and $10^{-3}$. Scaling down the implemented post-AGB stars scales down the emergent EUV radiation in the spectrum.
 
-We show the resultant BPT diagram for the photoionization models that vary in both \U{} and {\tt pagb} in the bottom panel of \Fig{pAGBBPT}. We find that the luminosity of the post-AGB stars could be reduced by a factor of two and still produce LIER-like emission, provided there are enough stars.
+We show the resultant BPT diagram for the photoionization models that vary in both \U{} and {\tt pagb} in the bottom panel of \Fig{hotstars}. We find that the luminosity of the post-AGB stars could be reduced by a factor of two and still produce LIER-like emission, provided there are enough stars.
 
 \citet{Belfiore16} found that the \sii{}/\ha{} line ratio provided a clean separation between LIER-like emission and Seyfert-like emission. In \Fig{lier}, we show the \sii{} emission produced by our post-AGB models. The line ratios produced by our post-AGB star models show the elevated \sii{}/\ha{} ratios observed in LIER galaxies, and confirms the utility of \sii{} as a means of identifying low-ionization emission.
 
 %-------------------------------------------------------
 % pAGB spectrum
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f27.pdf}
-    \includegraphics[width=0.45\textwidth]{f27.pdf}
+    \includegraphics[width=0.45\textwidth]{f29.pdf}
     \caption{\sii{}/\ha{} diagnostic diagram with a curve from \citet{Kewley01} that separates the region in the diagram where the emission lines are produced by star-forming regions. The grayscale 2D histogram shows the number density of SDSS star forming galaxies. The post-AGB star models are able to reproduce the elevated \sii{}/\ha{} emission observed in LIERs.}
     \label{fig:lier}
   \end{centering}
@@ -867,33 +869,34 @@ We show the resultant BPT diagram for the photoionization models that vary in bo
 % ----------------------------------------------------------------------------
 \subsection{Nebular Dust}\label{sec:secondary:dust}
 
-\FSPS includes two separate nebular emission models: one that is dust-free and one that includes the effects of dust within the gas cloud itself. Dust changes the temperature structure of the cloud, since it provides alternative mechanisms for heating and cooling the gas. If cloud temperatures are low enough to allow the survival of dust grains, grain photoionization and thermionic emission can be an efficient heating mechanism. 
+\FSPS includes two separate nebular emission models: one that is dust-free and one that includes the effects of dust within the gas cloud itself. We note that neither the dusty nor the dust-free models include the effect of reddening or extinction. The effect of including grains is primarily on the thermodynamic properties of the cloud, and extinction and reddening should be applied to the emergent spectrum. For consistency, the dust-free and dusty model grids include identical prescriptions for abundance depletions from \Tab{abd}.
 
-In \Fig{dustHeat} we show the change in temperature produced by model \hii regions that include dust grains when compared to the grain-free model as a function of metallicity and ionization parameter for 1 Myr models. The models that include grains produce slightly hotter \hii regions; at solar metallicity and $\logU = -1$, the grain model produces a volume-averaged electron temperature that is 25\% hotter than the grain-free model. This effect is only important at high metallicity, where the nebula is cool enough such that dust grains survive and contribute additional heating. In the high temperatures associated with the low-metallicity models, dust grains are destroyed and the inclusion of grains has little effect on the thermal properties of the \hii region. 
+Dust changes the temperature structure of the cloud, since it provides alternative mechanisms for heating and cooling the gas. If cloud temperatures are low enough to allow the survival of dust grains, grain photoionization and thermionic emission can be an efficient heating mechanism. 
+
+In \Fig{dustHeat} we show the change in temperature produced by model \hii regions that include dust grains when compared to the grain-free model as a function of metallicity and ionization parameter\added{for instantaneous burst models at 1 Myr}. The models that include grains produce slightly hotter \hii regions; at solar metallicity and $\logU = -1$, the grain model produces a volume-averaged electron temperature that is 25\% hotter than the grain-free model. This effect is only important at high metallicity, where the nebula is cool enough such that dust grains survive and contribute additional heating. In the high temperatures associated with the low-metallicity models, dust grains are destroyed and the inclusion of grains has little effect on the thermal properties of the \hii region. 
 
 %-------------------------------------------------------
 % Dust: Heating and Cooling
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f28.pdf}
-    \includegraphics[width=0.45\textwidth]{f28.pdf}
+    \includegraphics[width=0.45\textwidth]{f30.pdf}
     \caption{Effect of including grains within the nebular cloud on the resultant equilibrium temperature. For most models, heating from dust has a negligible effect on the equilibrium temperature of the model \hii region. However, for models with near-solar and super-solar abundances heating from dust grains can change the resultant equilibrium temperature by as much as ${\sim}30\%$.}
     \label{fig:dustHeat}
   \end{centering}
 \end{figure}
 %-------------------------------------------------------
 
-The inclusion of dust grains is most important for highly-ionized gaseous regions at high metallicity, where they have a non-negligible effect on emission line strengths. In \Fig{dustBPT} we show the BPT diagram for the model \hii regions with and without dust grains. Both grids do a reasonable job at covering the range of observed emission line strengths. However, for models at high metallicity and ionization parameter, the higher equilibrium temperatures produced in the dusty models produce enhanced \oiiihb{} at the same \niiha{}. The line ratios differ by less than 10\% at their most extreme values and still fail to reproduce the star-forming locus beyond $\sim 3$ Myr. A more careful analysis is required to determine which model provides the best fit to the data.
+The inclusion of dust grains is most important for highly-ionized gaseous regions at high metallicity, where they have a non-negligible effect on emission line strengths. In \Fig{dustBPT} we show the BPT diagram for the model \hii regions with and without dust grains. Both grids do a reasonable job at covering the range of observed emission line strengths. However, for models at high metallicity and ionization parameter, the higher equilibrium temperatures produced in the dusty models produce enhanced \oiiihb{} at the same \niiha{}. The line ratios differ by less than 10\% at their most extreme values and still fail to reproduce the star-forming locus beyond $\sim 3$ Myr. \replaced{A more careful analysis is required to determine which model provides the best fit to the data.}{A more careful analysis is required to determine which model provides the best fit to the data, we leave this for future studies.}
 
-We note that neither the dusty nor the dust-free models include the effect of reddening or extinction between the point where the line forms and the outer edge of the cloud. As such, the effect of including grains is primarily on the thermodynamic properties of the cloud, and extinction and reddening should be applied to the emergent spectrum. For consistency, the dust-free and dusty model grids include identical prescriptions for abundance depletions from \Tab{abd}.
 %-------------------------------------------------------
 % Dust: BPT Age Evol
 %-------------------------------------------------------
-\begin{figure}
+\begin{figure}[!htbp]
   \begin{centering}
     %\plotone{f29.pdf}
-    \includegraphics[width=0.45\textwidth]{f29.pdf}
+    \includegraphics[width=0.45\textwidth]{f31.pdf}
     \caption{Effect of including grains within the nebular cloud on line ratios in the BPT diagram. The solid black line shows the extreme starburst classification line from \citet{Kewley01} and the dashed line is the pure star formation classification line from \citet{Kauffmann03a}. The grayscale 2D histogram shows the number density of SDSS star-forming galaxies. The higher temperatures produced in the dusty models result in slightly elevated \oiiihb{} ratios, which better reproduce the line ratios observed in star-forming galaxies and \hii regions.}
     \label{fig:dustBPT}
   \end{centering}
@@ -939,10 +942,10 @@ We compare the resultant line ratios in \Fig{BPTsb99}, which show excellent agre
 %-------------------------------------------------------
 % ISOCHRONES: SB99 BPT Age Evolution
 %-------------------------------------------------------
-\begin{figure*} [ht!]
+\begin{figure*}[!htbp]
   \begin{centering}
     %\plotone{f30.pdf}
-    \includegraphics[width=0.8\textwidth]{f30.pdf}
+    \includegraphics[width=0.75\textwidth]{f32.pdf}
     \caption{BPT diagram comparing models run with two different SPS codes: FSPS and \SB as a function of SSP age. The models agree within $\sim5-10\%$ and show similar qualitative behavior.}
     \label{fig:BPTsb99}
   \end{centering}
@@ -965,138 +968,140 @@ The list of emission lines in the \FSPS nebular model is included here.
 \colhead{} & \colhead{} & \colhead{}
 }
 \startdata
-1215.6701	& Ly-$\alpha$ 1216	& \texttt{H  1 1215.68A}\\
-1025.728	& Ly-$\beta$ 1025	& \texttt{H  1 1025.73A}\\
-972.517	& Ly-$\gamma$ 972	& \texttt{H  1 972.543A}\\
-949.742	& Ly-$\delta$ 949	& \texttt{H  1 949.749A}\\
-937.814	& Ly 937	& \texttt{H  1 937.809A}\\
-930.751	& Ly 930	& \texttt{H  1 930.754A}\\
-926.249	& Ly 926	& \texttt{H  1 926.231A}\\
-923.148	& Ly 923	& \texttt{H  1 923.156A}\\
-6564.60	& H-$\alpha$ 6563	& \texttt{H  1 6562.85A}\\
-4862.71	& H-$\beta$ 4861	& \texttt{H  1 4861.36A}\\
-4341.692	& H-$\gamma$ 4340	& \texttt{H  1 4340.49A}\\
-4102.892	& H-$\delta$ 4102	& \texttt{H  1 4101.76A}\\
-3971.198	& H 3970	& \texttt{H  1 3970.09A}\\
-3890.166	& H 3889	& \texttt{H  1 3889.07A}\\
-3836.485	& H 3835	& \texttt{H  1 3835.40A}\\
-3798.987	& H 3798	& \texttt{H  1 3797.92A}\\
-18756.4	& Pa-$\alpha$ 1.8752$\mu\mathrm{m}$	& \texttt{H  1 1.87511m}\\
-12821.578	& Pa-$\beta$ 1.2819$\mu\mathrm{m}$	& \texttt{H  1 1.28181m}\\
-10941.17	& Pa-$\gamma$ 1.0939$\mu\mathrm{m}$	& \texttt{H  1 1.09381m}\\
-10052.60	& Pa-$\delta$ 1.0050$\mu\mathrm{m}$	& \texttt{H  1 1.00494m}\\
-9548.80	& Pa 9546	& \texttt{H  1 9545.99A}\\
-9232.20	& Pa 9229	& \texttt{H  1 9229.03A}\\
-9017.8	& Pa 9015	& \texttt{H  1 9014.92A}\\
-40522.79	& Br-$\alpha$ 4.0515$\mu\mathrm{m}$	& \texttt{H  1 4.05116m}\\
-26258.71	& Br-$\beta$ 2.6254$\mu\mathrm{m}$	& \texttt{H  1 2.62515m}\\
-21661.178	& Br-$\gamma$ 2.1657$\mu\mathrm{m}$	& \texttt{H  1 2.16553m}\\
-19450.89	& Br-$\delta$ 1.9447$\mu\mathrm{m}$	& \texttt{H  1 1.94456m}\\
-18179.20	& Br 1.8175 $\mu\mathrm{m}$	& \texttt{H  1 1.81741m}\\
-17366.885	& Br 1.7363 $\mu\mathrm{m}$	& \texttt{H  1 1.73621m}\\
-74599.00	& Pf-$\alpha$ 7.4585$\mu\mathrm{m}$	& \texttt{H  1 7.45781m}\\
-46537.80	& Pf-$\beta$ 4.6529$\mu\mathrm{m}$	& \texttt{H  1 4.65250m}\\
-37405.76	& Pf-$\gamma$ 3.7398$\mu\mathrm{m}$	& \texttt{H  1 3.73953m}\\
-32969.80	& Pf-$\delta$ 3.2964$\mu\mathrm{m}$	& \texttt{H  1 3.29609m}\\
-30392.02	& Pf 3.0386 $\mu\mathrm{m}$	& \texttt{H  1 3.03837m}\\
-123719.12	& Hu-$\alpha$ 12.4$\mu\mathrm{m}$	& \texttt{H  1 12.3685m}\\
-75024.40	& Hu-$\beta$ 7.5011$\mu\mathrm{m}$	& \texttt{H  1 7.50043m}\\
-59082.20	& Hu-$\gamma$ 5.9071$\mu\mathrm{m}$	& \texttt{H  1 5.90659m}\\
-51286.50	& Hu-$\delta$ 5.1277$\mu\mathrm{m}$	& \texttt{H  1 5.12725m}\\
-4472.735	& He{\sc\,i} 4472	& \texttt{He 1 4471.47A}\\
-5877.249	& He{\sc\,i} 5877	& \texttt{He 1 5875.61A}\\
-6679.995	& He{\sc\,i} 6680	& \texttt{He 1 6678.15A}\\
-10832.057	& He{\sc\,i} 1.0829$\mu\mathrm{m}$	& \texttt{He 1 1.08299m}\\
-10833.306	& He{\sc\,i} 1.0833$\mu\mathrm{m}$	& \texttt{He 1 1.08303m}\\
-3889.75	& He{\sc\,i} 3889	& \texttt{He 1 3888.63A}\\
-7067.138	& He{\sc\,i} 7065	& \texttt{He 1 7065.18A}\\
-1640.42	& He{\sc\,ii} 1640	& \texttt{He 2 1640.00A}\\
-9852.96	& [C{\sc\,i}] 9850	& \texttt{TOTL 9850.00A}\\
-8729.53	& [C{\sc\,i}] 8727	& \texttt{C  1 8727.00A}\\
-4622.864	& [C{\sc\,i}] 4621			& \texttt{C  1 4621.00A}\\
-6097000.00	& [C{\sc\,i}] 610$\mu\mathrm{m}$	& \texttt{C  1 609.200m}\\
-3703700.00	& [C{\sc\,i}] 369$\mu\mathrm{m}$	& \texttt{C  1 369.700m}\\
-1576429.62	& [C{\sc\,ii}] 157.7$\mu\mathrm{m}$	& \texttt{C  2 157.600m}\\
-2325.40	& C{\sc\,ii}] 2326	& \texttt{C  2 2325.00A}\\
-2324.21	& C{\sc\,ii}] 2326	& \texttt{C  2 2324.00A}\\
-2328.83	& C{\sc\,ii}] 2326	& \texttt{C  2 2329.00A}\\
-2327.64	& C{\sc\,ii}] 2326	& \texttt{C  2 2328.00A}\\
-2326.11	& C{\sc\,ii}] 2326	& \texttt{C  2 2327.00A}\\
-1908.73	& [C{\sc\,ii}I]	& \texttt{C  3 1910.00A}\\
-1906.68	& [C{\sc\,ii}I]	& \texttt{C  3 1907.00A}\\
-5201.705	& [N{\sc\,i}] 5200	& \texttt{N  1 5200.00A}\\
-6585.27	& [N{\sc\,ii}] 6585	& \texttt{N  2 6584.00A}\\
-6549.86	& [N{\sc\,ii}] 6549	& \texttt{N  2 6548.00A}\\
-5756.19	& [N{\sc\,ii}] 5756	& \texttt{N  2 5755.00A}\\
-1218000.00	& [N{\sc\,ii}] 122$\mu\mathrm{m}$	& \texttt{N  2 121.700m}\\
-2053000.00	& [N{\sc\,ii}] 205$\mu\mathrm{m}$	& \texttt{N  2 205.400m}\\
-2142.30	& N{\sc\,ii}] 2141	& \texttt{N  2 2141.00A}\\
-573300.00	& [N{\sc\,ii}I] 57$\mu\mathrm{m}$	& \texttt{N  3 57.2100m}\\
-6302.046	& [O{\sc\,i}] 6302	& \texttt{O  1 6300.00A}\\
-6365.535	& [O{\sc\,i}] 6365	& \texttt{O  1 6363.00A}\\
-5578.89	& [O{\sc\,i}] 5578	& \texttt{O  1 5577.00A}\\
-631852.00	& [O{\sc\,i}] 63$\mu\mathrm{m}$	& \texttt{O  1 63.1700m}\\
-1455350.00	& [O{\sc\,i}] 145$\mu\mathrm{m}$	& \texttt{O  1 145.530m}\\
-3727.10	& [O{\sc\,ii}] 3726	& \texttt{O II 3726.00A}\\
-3729.86	& [O{\sc\,ii}] 3729	& \texttt{O II 3729.00A}\\
-7332.21	& [O{\sc\,ii}] 7332	& \texttt{O II 7332.00A}\\
-7321.94	& [O{\sc\,ii}] 7323	& \texttt{O II 7323.00A}\\
-2471.088	& [O{\sc\,ii}] 2471	& \texttt{O II 2471.00A}\\
-1661.241	& O{\sc\,iii}] 1661	& \texttt{O  3 1661.00A}\\
-1666.15	& O{\sc\,iii}] 1666	& \texttt{O  3 1666.00A}\\
-5008.240	& [O{\sc\,iii}] 5007	& \texttt{O  3 5007.00A}\\
-4960.295	& [O{\sc\,iii}] 4960	& \texttt{O  3 4959.00A}\\
-4364.435	& [O{\sc\,iii}] 4364	& \texttt{TOTL 4363.00A		}\\
-2321.664	& [O{\sc\,iii}] 2321	& \texttt{O  3 2321.00A}\\
-883564.00	& [O{\sc\,iii}] 88$\mu\mathrm{m}$	& \texttt{O  3 88.3300m}\\
-518145.00	& [O{\sc\,iii}] 52$\mu\mathrm{m}$	& \texttt{O  3 51.8000m}\\
-128135.48	& [Ne{\sc\,ii}] 12.8$\mu\mathrm{m}$	& \texttt{Ne 2 12.8100m}\\
-155551.00	& [Ne{\sc\,iii}] 15.5$\mu\mathrm{m}$	& \texttt{Ne 3 15.5500m}\\
-360135.00	& [Ne{\sc\,iii}] 36$\mu\mathrm{m}$	& \texttt{Ne 3 36.0140m}\\
-3869.86	& [Ne{\sc\,iii}] 3870	& \texttt{Ne 3 3869.00A}\\
-3968.59	& [Ne{\sc\,iii}] 3968	& \texttt{Ne 3 3968.00A}\\
-3343.5	& [Ne{\sc\,iii}] 3343	& \texttt{Ne 3 3343.00A}\\
-1812.205	& [Ne{\sc\,iii}] 1815	& \texttt{Ne 3 1815.00A}\\
-4725.47	& [Ne{\sc\,iv}] 4720	& \texttt{Ne 4 4720.00A}\\
-2796.352	& Mg{\sc\,ii} 2800	& \texttt{Mg 2 2795.53A}\\
-2803.53	& Mg{\sc\,ii} 2800	& \texttt{Mg 2 2802.71A}\\
-348140.00	& [Si{\sc\,ii}] 35$\mu\mathrm{m}$	& \texttt{Si 2 34.8140m}\\
-10323.32	& [S{\sc\,ii}] 1.0331$\mu\mathrm{m}$		& \texttt{S  2 1.03300m}\\
-6732.673	& [S{\sc\,ii}] 6732	& \texttt{S II 6731.00A				}\\
-6718.294	& [S{\sc\,ii}] 6717	& \texttt{S II 6716.00A}\\
-4069.75	& [S{\sc\,ii}] 4070	& \texttt{S II 4070.00A}\\
-4077.50	& [S{\sc\,ii}] 4078	& \texttt{S II 4078.00A}\\
-187130.00	& [S{\sc\,iii}] 18.7$\mu\mathrm{m}$	& \texttt{S  3 18.6700m}\\
-334800.00	& [S{\sc\,iii}] 33.5$\mu\mathrm{m}$	& \texttt{S  3 33.4700m}\\
-9533.20	& [S{\sc\,iii}] 9533	& \texttt{S  3 9532.00A}\\
-9071.1	& [S{\sc\,iii}] 9071	& \texttt{S  3 9069.00A}\\
-6313.81	& [S{\sc\,iii}] 6314	& \texttt{S  3 6312.00A}\\
-3722.75	& [S{\sc\,iii}] 3723	& \texttt{S  3 3722.00A}\\
-105105.00	& [S{\sc\,iv}] 10.5$\mu\mathrm{m}$	& \texttt{S  4 10.5100m}\\
-69852.74	& [Ar{\sc\,ii}] 7$\mu\mathrm{m}$	& \texttt{Ar 2 6.98000m}\\
-7137.77	& [Ar{\sc\,iii}] 7138		& \texttt{Ar 3 7135.00A}\\
-7753.19	& [Ar{\sc\,iii}] 7753	& \texttt{Ar 3 7751.00A}\\
-5193.27	& [Ar{\sc\,iii}] 5193	& \texttt{Ar 3 5192.00A}\\
-3109.98	& [Ar{\sc\,iii}] 3110	& \texttt{Ar 3 3109.00A}\\
-218302.00	& [Ar{\sc\,iii}] 22$\mu\mathrm{m}$	& \texttt{Ar 3 21.8300m}\\
-89913.80	& [Ar{\sc\,iii}] 9$\mu\mathrm{m}$	& \texttt{Ar 3 9.00000m}\\
-7334.17	& [Ar{\sc\,iv}] 7330	& \texttt{Ar 4 7331.00A}\\
-2669.951	& [Al{\sc\,ii}] 2670	& \texttt{Al 2 2670.00A}\\
-2661.146	& [Al{\sc\,ii}] 2660	& \texttt{Al 2 2660.00A}\\
-1854.716	& [Al{\sc\,iii}] 1855	& \texttt{Al 3 1855.00A}\\
-1862.7895	& [Al{\sc\,iii}] 1863	& \texttt{Al 3 1863.00A}\\
-143678.00	& [Cl{\sc\,ii}] 14.4$\mu\mathrm{m}$	& \texttt{Cl 2 14.4000m}\\
-8581.06	& [Cl{\sc\,ii}] 8579	& \texttt{Cl 2 8579.00A}\\
-9126.10	& [Cl{\sc\,ii}] 9124	& \texttt{Cl 2 9124.00A}\\
-5539.411	& [Cl{\sc\,iii}] 5538	& \texttt{Cl 3 5538.00A}\\
-5519.242	& [Cl{\sc\,iii}] 5518	& \texttt{Cl 3 5518.00A}\\
-606420.00	& [P{\sc\,ii}] 60$\mu\mathrm{m}$	& \texttt{P  2 60.6400m}\\
-328709.00	& [P{\sc\,ii}] 32$\mu\mathrm{m}$	& \texttt{P  2 32.8700m}\\
-12570.21	& [Fe{\sc\,ii}] 1.26$\mu\mathrm{m}$	& \texttt{Fe 2 1.25668m}\\
+1215.6701 & H I (Ly-$\alpha$) & \texttt{H  1 1215.68A}\\
+1025.728 & H I (Ly-$\beta$) & \texttt{H  1 1025.73A}\\
+972.517 & H I (Ly-$\gamma$) & \texttt{H  1 972.543A}\\
+949.742 & H I (Ly-$\delta$) & \texttt{H  1 949.749A}\\
+937.814 & H I (Ly-5) & \texttt{H  1 937.809A}\\
+930.751 & H I (Ly-6) & \texttt{H  1 930.754A}\\
+926.249 & H I (Ly-7) & \texttt{H  1 926.231A}\\
+923.148 & H I (Ly-8) & \texttt{H  1 923.156A}\\
+6564.6 & H-$\alpha$ 6563 & \texttt{H  1 6562.85A}\\
+4862.71 & H-$\beta$ 4861 & \texttt{H  1 4861.36A}\\
+4341.692 & H-$\gamma$ 4340 & \texttt{H  1 4340.49A}\\
+4102.892 & H-$\delta$ 4102 & \texttt{H  1 4101.76A}\\
+3971.198 & H-5 3970 & \texttt{H  1 3970.09A}\\
+3890.166 & H-6 3889 & \texttt{H  1 3889.07A}\\
+3836.485 & H-7 3835 & \texttt{H  1 3835.40A}\\
+3798.987 & H-8 3798 & \texttt{H  1 3797.92A}\\
+18756.4 & H I (Pa-$\alpha$) & \texttt{H  1 1.87511m}\\
+12821.578 & H I (Pa-$\beta$) & \texttt{H  1 1.28181m}\\
+10941.17 & H I (Pa-$\gamma$) & \texttt{H  1 1.09381m}\\
+10052.6 & H I (Pa-$\delta$) & \texttt{H  1 1.00494m}\\
+9548.8 & H I (Pa-5) & \texttt{H  1 9545.99A}\\
+9232.2 & H I (Pa-6) & \texttt{H  1 9229.03A}\\
+9017.8 & H I (Pa-7) & \texttt{H  1 9014.92A}\\
+40522.79 & H I (Br-$\alpha$) & \texttt{H  1 4.05116m}\\
+26258.71 & H I (Br-$\beta$) & \texttt{H  1 2.62515m}\\
+21661.178 & H I (Br-$\gamma$) & \texttt{H  1 2.16553m}\\
+19450.89 & H I (Br-$\delta$) & \texttt{H  1 1.94456m}\\
+18179.2 & H I (Br-5) & \texttt{H  1 1.81741m}\\
+17366.885 & H I (Br-6) & \texttt{H  1 1.73621m}\\
+74599.0 & H I (Pf-$\alpha$) & \texttt{H  1 7.45781m}\\
+46537.8 & H I (Pf-$\beta$) & \texttt{H  1 4.65250m}\\
+37405.76 & H I (Pf-$\gamma$) & \texttt{H  1 3.73953m}\\
+32969.8 & H I (Pf-$\delta$) & \texttt{H  1 3.29609m}\\
+30392.02 & H I (Pf-5) & \texttt{H  1 3.03837m}\\
+123719.12 & H I (Hu-$\alpha$) & \texttt{H  1 12.3685m}\\
+75024.4 & H I (Hu-$\beta$) & \texttt{H  1 7.50043m}\\
+59082.2 & H I (Hu-$\gamma$) & \texttt{H  1 5.90659m}\\
+51286.5 & H I (Hu-$\delta$) & \texttt{H  1 5.12725m}\\
+4472.735 & He{\sc\,i} 4472 & \texttt{He 1 4471.47A}\\
+5877.249 & He{\sc\,i} 5877 & \texttt{He 1 5875.61A}\\
+6679.995 & He{\sc\,i} 6680 & \texttt{He 1 6678.15A}\\
+10832.057 & He{\sc\,i} 10829 & \texttt{He 1 1.08299m}\\
+10833.306 & He{\sc\,i} 10833 & \texttt{He 1 1.08303m}\\
+3889.75 & He{\sc\,i} 3889 & \texttt{He 1 3888.63A}\\
+7067.138 & He{\sc\,i} 7065 & \texttt{He 1 7065.18A}\\
+1640.42 & He{\sc\,ii} 1640 & \texttt{He 2 1640.00A}\\
+9852.96 & [C{\sc\,i}] 9850 & \texttt{TOTL 9850.00A}\\
+8729.53 & [C{\sc\,i}] 8727 & \texttt{C  1 8727.00A}\\
+4622.864 & [C{\sc\,i}] 4621 & \texttt{C  1 4621.00A}\\
+6097000.0 & [C{\sc\,i}] 610$\mu\mathrm{m}$ & \texttt{C  1 609.200m}\\
+3703700.0 & [C{\sc\,i}] 369$\mu\mathrm{m}$ & \texttt{C  1 369.700m}\\
+1576429.62 & [C{\sc\,ii}] 157.7$\mu\mathrm{m}$ & \texttt{C  2 157.600m}\\
+2325.4 & C{\sc\,ii}] 2326 & \texttt{C  2 2325.00A}\\
+2324.21 & C{\sc\,ii}] 2326 & \texttt{C  2 2324.00A}\\
+2328.83 & C{\sc\,ii}] 2326 & \texttt{C  2 2329.00A}\\
+2327.64 & C{\sc\,ii}] 2326 & \texttt{C  2 2328.00A}\\
+2326.11 & C{\sc\,ii}] 2326 & \texttt{C  2 2327.00A}\\
+1908.73 & C{\sc\,iii}]  & \texttt{C  3 1910.00A}\\
+1906.68 & [C{\sc\,iii}]  & \texttt{C  3 1907.00A}\\
+5201.705 & [N{\sc\,i}] 5200 & \texttt{N  1 5200.00A}\\
+6585.27 & [N{\sc\,ii}] 6585 & \texttt{N  2 6584.00A}\\
+6549.86 & [N{\sc\,ii}] 6549 & \texttt{N  2 6548.00A}\\
+5756.19 & [N{\sc\,ii}] 5756 & \texttt{N  2 5755.00A}\\
+1218000.0 & [N{\sc\,ii}] 122$\mu\mathrm{m}$ & \texttt{N  2 121.700m}\\
+2053000.0 & [N{\sc\,ii}] 205$\mu\mathrm{m}$ & \texttt{N  2 205.400m}\\
+2142.3 & N{\sc\,ii}] 2141 & \texttt{N  2 2141.00A}\\
+573300.0 & [N{\sc\,iii}] 57$\mu\mathrm{m}$ & \texttt{N  3 57.2100m}\\
+6302.046 & [O{\sc\,i}] 6302 & \texttt{O  1 6300.00A}\\
+6365.535 & [O{\sc\,i}] 6365 & \texttt{O  1 6363.00A}\\
+5578.89 & [O{\sc\,i}] 5578 & \texttt{O  1 5577.00A}\\
+631852.0 & [O{\sc\,i}] 63$\mu\mathrm{m}$ & \texttt{O  1 63.1700m}\\
+1455350.0 & [O{\sc\,i}] 145$\mu\mathrm{m}$ & \texttt{O  1 145.530m}\\
+3727.1 & [O{\sc\,ii}] 3726 & \texttt{O II 3726.00A}\\
+3729.86 & [O{\sc\,ii}] 3729 & \texttt{O II 3729.00A}\\
+7332.21 & [O{\sc\,ii}] 7332 & \texttt{O II 7332.00A}\\
+7321.94 & [O{\sc\,ii}] 7323 & \texttt{O II 7323.00A}\\
+2471.088 & [O{\sc\,ii}] 2471 & \texttt{O II 2471.00A}\\
+1661.241 & O{\sc\,iii}] 1661 & \texttt{O  3 1661.00A}\\
+1666.15 & O{\sc\,iii}] 1666 & \texttt{O  3 1666.00A}\\
+5008.24 & [O{\sc\,iii}] 5007 & \texttt{O  3 5007.00A}\\
+4960.295 & [O{\sc\,iii}] 4960 & \texttt{O  3 4959.00A}\\
+4364.435 & [O{\sc\,iii}] 4364 & \texttt{TOTL 4363.00A}\\
+2321.664 & [O{\sc\,iii}] 2321 & \texttt{O  3 2321.00A}\\
+883564.0 & [O{\sc\,iii}] 88$\mu\mathrm{m}$ & \texttt{O  3 88.3300m}\\
+518145.0 & [O{\sc\,iii}] 52$\mu\mathrm{m}$ & \texttt{O  3 51.8000m}\\
+128135.48 & [Ne{\sc\,ii}] 12.8$\mu\mathrm{m}$ & \texttt{Ne 2 12.8100m}\\
+155551.0 & [Ne{\sc\,iii}] 15.5$\mu\mathrm{m}$ & \texttt{Ne 3 15.5500m}\\
+360135.0 & [Ne{\sc\,iii}] 36$\mu\mathrm{m}$ & \texttt{Ne 3 36.0140m}\\
+3869.86 & [Ne{\sc\,iii}] 3870 & \texttt{Ne 3 3869.00A}\\
+3968.59 & [Ne{\sc\,iii}] 3968 & \texttt{Ne 3 3968.00A}\\
+3343.5 & [Ne{\sc\,iii}] 3343 & \texttt{Ne 3 3343.00A}\\
+1812.205 & [Ne{\sc\,iii}] 1815 & \texttt{Ne 3 1815.00A}\\
+4725.47 & [Ne{{\sc\,iv}}] 4720 & \texttt{Ne 4 4720.00A}\\
+2796.352 & Mg{\sc\,ii} 2800 & \texttt{Mg 2 2795.53A}\\
+2803.53 & Mg{\sc\,ii} 2800 & \texttt{Mg 2 2802.71A}\\
+348140.0 & [Si{\sc\,ii}] 35$\mu\mathrm{m}$ & \texttt{Si 2 34.8140m}\\
+10323.32 & [S{\sc\,ii}] 10331 & \texttt{S  2 1.03300m}\\
+6732.673 & [S{\sc\,ii}] 6732 & \texttt{S II 6731.00A}\\
+6718.294 & [S{\sc\,ii}] 6717 & \texttt{S II 6716.00A}\\
+4069.75 & [S{\sc\,ii}] 4070 & \texttt{S II 4070.00A}\\
+4077.5 & [S{\sc\,ii}] 4078 & \texttt{S II 4078.00A}\\
+187130.0 & [S{\sc\,iii}] 18.7$\mu\mathrm{m}$ & \texttt{S  3 18.6700m}\\
+334800.0 & [S{\sc\,iii}] 33.5$\mu\mathrm{m}$ & \texttt{S  3 33.4700m}\\
+9533.2 & [S{\sc\,iii}] 9533 & \texttt{S  3 9532.00A}\\
+9071.1 & [S{\sc\,iii}] 9071 & \texttt{S  3 9069.00A}\\
+6313.81 & [S{\sc\,iii}] 6314 & \texttt{S  3 6312.00A}\\
+3722.75 & [S{\sc\,iii}] 3723 & \texttt{S  3 3722.00A}\\
+105105.0 & [S{{\sc\,iv}}] 10.5$\mu\mathrm{m}$ & \texttt{S  4 10.5100m}\\
+69852.74 & [Ar{\sc\,ii}] 7$\mu\mathrm{m}$ & \texttt{Ar 2 6.98000m}\\
+7137.77 & [Ar{\sc\,iii}] 7138 & \texttt{Ar 3 7135.00A}\\
+7753.19 & [Ar{\sc\,iii}] 7753 & \texttt{Ar 3 7751.00A}\\
+5193.27 & [Ar{\sc\,iii}] 5193 & \texttt{Ar 3 5192.00A}\\
+3109.98 & [Ar{\sc\,iii}] 3110 & \texttt{Ar 3 3109.00A}\\
+218302.0 & [Ar{\sc\,iii}] 22$\mu\mathrm{m}$ & \texttt{Ar 3 21.8300m}\\
+89913.8 & [Ar{\sc\,iii}] 9$\mu\mathrm{m}$ & \texttt{Ar 3 9.00000m}\\
+7334.17 & [Ar{{\sc\,iv}}] 7330 & \texttt{Ar 4 7331.00A}\\
+2669.951 & [Al{\sc\,ii}] 2670 & \texttt{Al 2 2670.00A}\\
+2661.146 & [Al{\sc\,ii}] 2660 & \texttt{Al 2 2660.00A}\\
+1854.716 & [Al{\sc\,iii}] 1855 & \texttt{Al 3 1855.00A}\\
+1862.7895 & [Al{\sc\,iii}] 1863 & \texttt{Al 3 1863.00A}\\
+143678.0 & [Cl{\sc\,ii}] 14.4$\mu\mathrm{m}$ & \texttt{Cl 2 14.4000m}\\
+8581.06 & [Cl{\sc\,ii}] 8579 & \texttt{Cl 2 8579.00A}\\
+9126.1 & [Cl{\sc\,ii}] 9124 & \texttt{Cl 2 9124.00A}\\
+5539.411 & [Cl{\sc\,iii}] 5538 & \texttt{Cl 3 5538.00A}\\
+5519.242 & [Cl{\sc\,iii}] 5518 & \texttt{Cl 3 5518.00A}\\
+606420.0 & [P{\sc\,ii}] 60$\mu\mathrm{m}$ & \texttt{P  2 60.6400m}\\
+328709.0 & [P{\sc\,ii}] 32$\mu\mathrm{m}$ & \texttt{P  2 32.8700m}\\
+12570.21 & [Fe{\sc\,ii}] 1.26$\mu\mathrm{m}$ & \texttt{Fe 2 1.25668m}\\
 \enddata
 \end{deluxetable}
 
 % ------------------------------------------------------------------------------
 \bibliography{main}
 % ------------------------------------------------------------------------------
+\listofchanges
+
 \end{document}
