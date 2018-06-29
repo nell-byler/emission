@@ -101,7 +101,7 @@
 \begin{abstract}
 Accounting for nebular emission when modeling galaxy spectral energy distributions (SEDs) is important, as both line and continuum emission can contribute significantly to the total observed flux. In this work, we present a new nebular emission model integrated within the Flexible Stellar Population Synthesis code that computes the line and continuum emission for complex stellar populations using the photoionization code \textsc{Cloudy}. The self-consistent coupling of the nebular emission to the matched ionizing spectrum produces emission line intensities that correctly scale with the stellar population as a function of age and metallicity. This more complete model of galaxy SEDs will improve estimates of global gas properties derived with diagnostic diagrams, star formation rates based on H$\alpha$, and \replaced{stellar masses derived from NIR broadband photometry}{physical properties derived from broadband photometry}\explain{For galaxies with significant recent star formation and star clusters, including the contribution from nebular emission will affect color and magnitude-based estimates of age, mass, reddening etc.}. Our models agree well with results from other photoionization models and are able to reproduce observed emission from H\,\textsc{ii} regions and star-forming galaxies. Our models show improved agreement with the observed H\,\textsc{ii} regions in the Ne\,\textsc{iii}/O\,\textsc{ii} plane and show satisfactory agreement with He\,\textsc{ii} emission from $z=2$ galaxies when including rotating stellar models. Models including post-asymptotic giant branch stars are able to reproduce line ratios consistent with low-ionization emission regions (LIERs). \added{The models are integrated into current versions of \textsc{FSPS} and include self-consistent nebular emission predictions for MIST and Padova+Geneva evolutionary tracks.}
 \end{abstract}
-\keywords{Galaxies --- galaxies: abundances --- galaxies: ISM --- galaxies: star formation}
+\keywords{Galaxies --- galaxies: abundances --- galaxies: ISM --- galaxies: star formation --- ultraviolet: galaxies}
 
 \section{Introduction} \label{sec:introduction}
 
@@ -1156,11 +1156,11 @@ The list of emission lines in the \FSPS nebular model is included here.
 328709.0 & [P{\sc\,ii}] 32$\mu\mathrm{m}$ & \texttt{P  2 32.8700m}\\
 12570.21 & [Fe{\sc\,ii}] 1.26$\mu\mathrm{m}$ & \texttt{Fe 2 1.25668m}\\
 \enddata
+\tablecomments{Only a portion of this table is shown here to demonstrate its form and content. A machine-readable version of the full table is available.}
 \end{deluxetable}
 
 % ------------------------------------------------------------------------------
 \bibliography{main}
 % ------------------------------------------------------------------------------
-\listofchanges
 
 \end{document}
